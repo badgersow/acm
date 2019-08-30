@@ -1,6 +1,5 @@
 package ipsc2000;
 
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -11,7 +10,6 @@ import java.util.stream.Collectors;
 public class C {
     public static void main(String[] args) {
         final Scanner in = new Scanner(System.in);
-        final PrintWriter out = new PrintWriter(System.out);
         final StringBuilder inputBuilder = new StringBuilder();
         while (in.hasNext()) {
             inputBuilder.append(in.nextLine());
@@ -23,7 +21,7 @@ public class C {
         for (int from = 0; from < input.length(); from++) {
             long hash = 0;
             long pow = 1;
-            for (int to = from + 1; to < input.length(); to++) {
+            for (int to = from; to < input.length(); to++) {
                 hash = hash + input.charAt(to) * pow;
                 pow *= base;
                 occurrencesByHash.compute(hash, (k, v) -> v == null ? 1 : v + 1);
@@ -31,7 +29,7 @@ public class C {
         }
 
         final int[] hashesByOccurrance = new int[input.length() + 1];
-        occurrencesByHash.forEach((hash,occ) -> hashesByOccurrance[occ]++);
+        occurrencesByHash.forEach((hash, occ) -> hashesByOccurrance[occ]++);
 
         final Map<Long, Integer> potentialOccurrencesByHash =
                 occurrencesByHash.entrySet().stream()
@@ -42,18 +40,20 @@ public class C {
         for (int from = 0; from < input.length(); from++) {
             long hash = 0;
             long pow = 1;
-            for (int to = from + 1; to < input.length(); to++) {
+            for (int to = from; to < input.length(); to++) {
                 hash = hash + input.charAt(to) * pow;
                 pow *= base;
                 if (potentialOccurrencesByHash.containsKey(hash)) {
-                    potentialOccurrencesByWord.put(input.substring(from, to), potentialOccurrencesByHash.get(hash));
+                    potentialOccurrencesByWord.put(input.substring(from, to + 1), potentialOccurrencesByHash.get(hash));
                 }
             }
         }
 
         final Map<Integer, String> wordByOccurences = potentialOccurrencesByWord.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey,
-                        (a, b) -> a, TreeMap::new));
+                        (a, b) -> {
+                            throw new IllegalStateException();
+                        }, TreeMap::new));
 
         final AtomicInteger index = new AtomicInteger();
         wordByOccurences.forEach((occurrences, word) ->
