@@ -2,8 +2,6 @@ package ipsc2000;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import com.google.common.hash.HashFunction;
-import com.google.common.hash.Hashing;
 
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -23,12 +21,14 @@ public class C {
         }
         final String input = inputBuilder.toString();
 
-        final HashFunction hashFunction = Hashing.goodFastHash(64);
         final Map<Long, Integer> occurrencesByHash = new HashMap<>();
+        final long base = 127;
         for (int from = 0; from < input.length(); from++) {
             long hash = 0;
+            long pow = 1;
             for (int to = from + 1; to < input.length(); to++) {
-                hash = (hash + input.charAt(to) * pow(base, from - to - 1)) % P;
+                hash = hash + input.charAt(to) * pow;
+                pow *= base;
                 occurrencesByHash.compute(hash, (k, v) -> v == null ? 1 : v + 1);
             }
         }
@@ -44,8 +44,10 @@ public class C {
         final Map<String, Integer> potentialOccurrencesByWord = new HashMap<>();
         for (int from = 0; from < input.length(); from++) {
             long hash = 0;
+            long pow = 1;
             for (int to = from + 1; to < input.length(); to++) {
-                hash = (hash + input.charAt(to) * pow(base, from - to - 1)) % P;
+                hash = hash + input.charAt(to) * pow;
+                pow *= base;
                 if (potentialOccurrencesByHash.containsKey(hash)) {
                     potentialOccurrencesByWord.put(input.substring(from, to), potentialOccurrencesByHash.get(hash));
                 }
@@ -59,21 +61,5 @@ public class C {
         final AtomicInteger index = new AtomicInteger();
         wordByOccurences.forEach((occurrences, word) ->
                 System.out.println(index.incrementAndGet() + " " + occurrences + " " + word));
-    }
-
-    private static long base = 257;
-
-    private static long P = 1_000_000_009;
-
-    private static long pow(long a, int n) {
-        long r = 1L;
-        while (n > 0) {
-            if (n % 2 == 1) {
-                r = (r * a) % P;
-            }
-            a = a * a % P;
-            n /= 2;
-        }
-        return r;
     }
 }
