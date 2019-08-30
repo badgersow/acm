@@ -1,8 +1,5 @@
 package ipsc2000;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
-
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,12 +30,12 @@ public class C {
             }
         }
 
-        final Multimap<Integer, Long> hashesByOccurance =
-                ImmutableMultimap.copyOf(occurrencesByHash.entrySet()).inverse();
+        final int[] hashesByOccurrance = new int[input.length() + 1];
+        occurrencesByHash.forEach((hash,occ) -> hashesByOccurrance[occ]++);
 
         final Map<Long, Integer> potentialOccurrencesByHash =
                 occurrencesByHash.entrySet().stream()
-                        .filter(e -> hashesByOccurance.get(e.getValue()).size() == 1)
+                        .filter(e -> hashesByOccurrance[e.getValue()] == 1)
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         final Map<String, Integer> potentialOccurrencesByWord = new HashMap<>();
