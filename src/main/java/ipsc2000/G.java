@@ -20,7 +20,6 @@ public class G {
     public static void main(String[] args) {
         final Scanner in = new Scanner(System.in);
 
-        outer:
         while (in.hasNextInt()) {
             final int n = in.nextInt();
             final Multimap<Integer, Integer> procedureByPage = HashMultimap.create();
@@ -43,7 +42,7 @@ public class G {
             final List<Integer> pagesWithMoreThanOneProcedure =
                     pages.stream().filter(p -> procedureByPage.get(p).size() > 1).collect(Collectors.toList());
             final List<Integer> pagesWithOneProcedure =
-                    pages.stream().filter(p -> procedureByPage.get(p).size() > 1).collect(Collectors.toList());
+                    pages.stream().filter(p -> procedureByPage.get(p).size() == 1).collect(Collectors.toList());
 
             if (pagesWithMoreThanOneProcedure.size() > 2) {
                 // Not possible
@@ -73,12 +72,12 @@ public class G {
         }
 
         final HashSet<Integer> visited = new HashSet<>();
-        for (Integer page : pagesGraph.keySet()) {
+        for (Integer page : procedureByPage.keySet()) {
             if (visited.contains(page)) {
                 continue;
             }
 
-            boolean cycle = checkCycles(page, pagesGraph, visited);
+            boolean cycle = checkCycles(page, null, pagesGraph, visited);
             if (cycle) {
                 System.out.println("NO");
                 return;
@@ -86,36 +85,44 @@ public class G {
         }
 
         visited.clear();
-        for (Integer page : pagesGraph.keySet()) {
+        for (Integer page : procedureByPage.keySet()) {
             if (visited.contains(page) || pagesGraph.get(page).size() > 1) {
                 continue;
             }
 
-            printDfs(page, pagesGraph, visited);
+            printDfs(page, null, pagesGraph, visited);
         }
     }
 
-    private static void printDfs(Integer page, Multimap<Integer, Integer> pagesGraph, HashSet<Integer> visited) {
+    private static void printDfs(Integer page, Integer previous, Multimap<Integer, Integer> pagesGraph, HashSet<Integer> visited) {
         visited.add(page);
         System.out.println(page);
 
         for (Integer child : pagesGraph.get(page)) {
+            if (child.equals(previous)) {
+                continue;
+            }
+
             if (visited.contains(child)) {
                 throw new IllegalStateException("This shouldn't happen");
             }
 
-            printDfs(child, pagesGraph, visited);
+            printDfs(child, page, pagesGraph, visited);
         }
     }
 
-    private static boolean checkCycles(Integer page, Multimap<Integer, Integer> pagesGraph, HashSet<Integer> visited) {
+    private static boolean checkCycles(Integer page, Integer previous, Multimap<Integer, Integer> pagesGraph, HashSet<Integer> visited) {
         visited.add(page);
         for (Integer child : pagesGraph.get(page)) {
+            if (child.equals(previous)) {
+                continue;
+            }
+
             if (visited.contains(child)) {
                 return true;
             }
 
-            if (checkCycles(child, pagesGraph, visited)) {
+            if (checkCycles(child, page, pagesGraph, visited)) {
                 return true;
             }
         }
