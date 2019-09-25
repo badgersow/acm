@@ -1,12 +1,8 @@
 package ipsc2000;
 
 import com.google.common.base.Preconditions;
-import org.checkerframework.framework.qual.PreconditionAnnotation;
 
-import javax.swing.*;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 import java.util.Set;
@@ -62,7 +58,7 @@ public class B {
                     first.y * (first.x - second.x);
 
             final long g = gcd(abs(a), gcd(abs(b), abs(c)));
-            if (a >= 0) {
+            if (a > 0 || a == 0 && b > 0 || a == 0 && b == 0 && c > 0) {
                 this.a = a / g;
                 this.b = b / g;
                 this.c = c / g;
@@ -160,10 +156,6 @@ public class B {
         final long numerator;
         final long denominator;
 
-        public Fraction(int n) {
-            this(n, 1L);
-        }
-
         public Fraction(long numerator, long denominator) {
             Preconditions.checkArgument(denominator != 0);
 
@@ -175,26 +167,6 @@ public class B {
                 this.numerator = -numerator / gcd;
                 this.denominator = -denominator / gcd;
             }
-        }
-
-        public Fraction plus(Fraction other) {
-            return new Fraction(numerator * other.denominator + other.numerator * denominator,
-                    denominator * other.denominator);
-        }
-
-        public Fraction minus(Fraction other) {
-            return new Fraction(numerator * other.denominator - other.numerator * denominator,
-                    denominator * other.denominator);
-        }
-
-        public Fraction mul(Fraction other) {
-            return new Fraction(numerator * other.numerator,
-                    denominator * other.denominator);
-        }
-
-        public Fraction div(Fraction other) {
-            return new Fraction(numerator * other.denominator,
-                    denominator * other.numerator);
         }
 
         @Override
