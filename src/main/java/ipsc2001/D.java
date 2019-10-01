@@ -31,7 +31,7 @@ public class D {
 
             if (parent == 0 && weight == 0) {
                 root = i;
-                break;
+                continue;
             }
 
             children[parent].add(i);
@@ -60,7 +60,8 @@ public class D {
     }
 
     private static int calculateCount(int root) {
-        return count[root] = children[root].stream().mapToInt(D::calculateCount).sum();
+        return count[root] = 1 +
+                children[root].stream().mapToInt(D::calculateCount).sum();
     }
 
     private static int solve(int root, int firstMembers, int parentColor) {
@@ -88,18 +89,45 @@ public class D {
 
         // Color the current node to 1 if this is possible
         if (firstMembers > 0) {
-            bestSolution = (parentColor == 2 ? a[root] : 0) +
-                    Math.max(bestSolution, compose(root, 0, firstMembers - 1, 1));
+            bestSolution =
+                    Math.max(bestSolution,
+                            (parentColor == 2 ? a[root] : 0) +
+                                    compose(root, 0, firstMembers - 1, 1));
         }
 
         // Color the current node to 2
-        bestSolution = (parentColor == 1 ? a[root] : 0) +
-                Math.max(bestSolution, compose(root, 0, firstMembers, 2));
+        bestSolution =
+                Math.max(bestSolution,
+                        (parentColor == 1 ? a[root] : 0) +
+                                compose(root, 0, firstMembers, 2));
 
         return solveDP[root][firstMembers][parentColor] = bestSolution;
     }
 
     // Implement weak k-composition of the current node into subtrees
     private static int compose(int root, int position, int sum, int parentColor) {
+        if (position == children[root].size()) {
+            if (sum == 0) {
+                // Successful!
+                return 0;
+            }
+
+            // Failed. We should return -infinity
+            return Integer.MIN_VALUE / 2;
+        }
+
+        if (composeDP[root][position][sum][parentColor] != -1) {
+            return composeDP[root][position][sum][parentColor];
+        }
+
+        int bestSolution = Integer.MIN_VALUE;
+        final int child = children[root].get(position);
+        for (int firstMembers = 0; firstMembers <= Math.min(sum, count[child]); firstMembers++) {
+            bestSolution = Math.max(bestSolution,
+                    solve(child, firstMembers, parentColor) + // current child node
+                            compose(root, position + 1, sum - firstMembers, parentColor)); // rest of children
+        }
+
+        return composeDP[root][position][sum][parentColor] = bestSolution;
     }
 }
