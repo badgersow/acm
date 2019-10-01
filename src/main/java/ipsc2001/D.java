@@ -12,6 +12,7 @@ public class D {
     private static int[][][] solveDP;
     private static int[][][][] composeDP;
     private static int[] count;
+    private static int[] colors;
 
     public static void main(String[] args) {
         final Scanner in = new Scanner(System.in);
@@ -56,8 +57,58 @@ public class D {
         count = new int[n + 1];
         calculateCount(root);
 
-        System.out.println(solve(root, n / 2, 0));
+        solve(root, n / 2, 0);
+
+        colors = new int[n + 1];
+        solveRestore(root, n / 2, 0);
+
+        for (int i = 1; i < colors.length; i++) {
+            if (colors[i] == 1) {
+                System.out.println(i);
+            }
+        }
     }
+
+    private static void solveRestore(int root, int firstMembers, int parentColor) {
+        // Color the leaf
+        if (children[root].isEmpty()) {
+            colors[root] = (firstMembers == 1 ? 1 : 2);
+            return;
+        }
+
+        // What is more optimal? Coloring this to 1 or 2?
+        boolean color1isBetter = solve(root, firstMembers, parentColor) ==
+                (parentColor == 2 ? a[root] : 0) +
+                        compose(root, 0, firstMembers - 1, 1);
+
+        if (color1isBetter) {
+            colors[root] = 1;
+            composeRestore(root, 0, firstMembers - 1, 1);
+        } else {
+            colors[root] = 2;
+            composeRestore(root, 0, firstMembers, 2);
+        }
+    }
+
+    private static void composeRestore(int root, int position, int sum, int parentColor) {
+        if (position == children[root].size()) {
+            return;
+        }
+
+        final int child = children[root].get(position);
+        final int bestSolution = compose(root, position, sum, parentColor);
+        for (int firstMembers = 0; firstMembers <= Math.min(sum, count[child]); firstMembers++) {
+            final int currentSolution = solve(child, firstMembers, parentColor) + // current child node
+                    compose(root, position + 1, sum - firstMembers, parentColor);
+
+            if (currentSolution == bestSolution) {
+                solveRestore(child, firstMembers, parentColor);
+                composeRestore(root, position + 1, sum - firstMembers, parentColor);
+                break;
+            }
+        }
+    }
+
 
     private static int calculateCount(int root) {
         return count[root] = 1 +
@@ -65,24 +116,24 @@ public class D {
     }
 
     private static int solve(int root, int firstMembers, int parentColor) {
+        // If we already have the solution
+        if (solveDP[root][firstMembers][parentColor] != -1) {
+            return solveDP[root][firstMembers][parentColor];
+        }
+
         // Color the leaf
         if (children[root].isEmpty()) {
             if (firstMembers > 1) {
-                return Integer.MIN_VALUE / 2; // Impossible
+                return solveDP[root][firstMembers][parentColor] = Integer.MIN_VALUE / 2; // Impossible
             }
 
             // If the leaf employee is happy
             if (firstMembers == 1 && parentColor == 2 || firstMembers == 0 && parentColor == 1) {
-                return a[root];
+                return solveDP[root][firstMembers][parentColor] = a[root];
             }
 
             // Leaf employee has the same color as the boss
-            return 0;
-        }
-
-        // If we already have the solution
-        if (solveDP[root][firstMembers][parentColor] != -1) {
-            return solveDP[root][firstMembers][parentColor];
+            return solveDP[root][firstMembers][parentColor] = 0;
         }
 
         int bestSolution = Integer.MIN_VALUE / 2;
@@ -106,18 +157,18 @@ public class D {
 
     // Implement weak k-composition of the current node into subtrees
     private static int compose(int root, int position, int sum, int parentColor) {
+        if (composeDP[root][position][sum][parentColor] != -1) {
+            return composeDP[root][position][sum][parentColor];
+        }
+
         if (position == children[root].size()) {
             if (sum == 0) {
                 // Successful!
-                return 0;
+                return composeDP[root][position][sum][parentColor] = 0;
             }
 
             // Failed. We should return -infinity
-            return Integer.MIN_VALUE / 2;
-        }
-
-        if (composeDP[root][position][sum][parentColor] != -1) {
-            return composeDP[root][position][sum][parentColor];
+            return composeDP[root][position][sum][parentColor] = Integer.MIN_VALUE / 2;
         }
 
         int bestSolution = Integer.MIN_VALUE;
