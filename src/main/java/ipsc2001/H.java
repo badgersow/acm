@@ -15,7 +15,7 @@ public class H {
     public static void main(String[] args) {
         final PrintWriter out = new PrintWriter(System.out);
 
-        n = 7;
+        n = 3;
         final List<Set<Integer>> partSets = new ArrayList<>();
 
         generateSubsets(1, n / 2, new ArrayList<>(), partSets);
@@ -24,6 +24,17 @@ public class H {
         final Map<Set<Integer>, Integer> cardByPartSet = new HashMap<>();
 
         boolean foundSolution = assignTheNumbers(0, partSets, reservedSets, cardByPartSet);
+
+        if (!foundSolution) {
+            out.println("MAGIC");
+        } else {
+            for (Map.Entry<Set<Integer>, Integer> entry : cardByPartSet.entrySet()) {
+                final Set<Integer> partSet = entry.getKey();
+                final Integer number = entry.getValue();
+
+                partSet.forEach(k -> out.print(k ));
+            }
+        }
 
         out.println(foundSolution);
         out.println(cardByPartSet);
