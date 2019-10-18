@@ -32,12 +32,13 @@ public class H {
                 final Set<Integer> partSet = entry.getKey();
                 final Integer number = entry.getValue();
 
-                partSet.forEach(k -> out.print(k ));
+                partSet.forEach(k -> out.print(k + " "));
+                out.print(number);
+                out.print(" -> ");
+                out.println(number);
             }
         }
 
-        out.println(foundSolution);
-        out.println(cardByPartSet);
         out.flush();
     }
 
