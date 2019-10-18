@@ -2,6 +2,7 @@ package ipsc2001;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -15,10 +16,12 @@ public class H {
     public static void main(String[] args) {
         final PrintWriter out = new PrintWriter(System.out);
 
-        n = 3;
+        n = 9;
         final List<Set<Integer>> partSets = new ArrayList<>();
 
         generateSubsets(1, n / 2, new ArrayList<>(), partSets);
+
+        Collections.shuffle(partSets);
 
         final Set<Set<Integer>> reservedSets = new HashSet<>();
         final Map<Set<Integer>, Integer> cardByPartSet = new HashMap<>();
