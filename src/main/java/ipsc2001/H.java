@@ -16,7 +16,7 @@ public class H {
     public static void main(String[] args) {
         final PrintWriter out = new PrintWriter(System.out);
 
-        n = 9;
+        n = 15;
         final List<Set<Integer>> partSets = new ArrayList<>();
 
         generateSubsets(1, n / 2, new ArrayList<>(), partSets);
