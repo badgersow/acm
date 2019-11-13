@@ -1,6 +1,11 @@
 package algorithm.graph;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
+
+import java.util.Map;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -13,6 +18,18 @@ public class EdmondsCarpTest {
     public void testTrivialGraph() {
         final FlowNetwork network = new FlowNetwork() {
             @Override
+            public Set<Integer> vertices() {
+                return ImmutableSet.of(1, 2);
+            }
+
+            @Override
+            public Map<Integer, Map<Integer, Integer>> capacity() {
+                return ImmutableMap.of(
+                        1, ImmutableMap.of(2, 42)
+                );
+            }
+
+            @Override
             public int s() {
                 return 1;
             }
@@ -21,22 +38,13 @@ public class EdmondsCarpTest {
             public int t() {
                 return 2;
             }
-
-            @Override
-            public int capacity(int u, int v) {
-                if (u == 1 && v == 2) {
-                    return 42;
-                }
-
-                return 0;
-            }
         };
 
         final Flow flow = new EdmondsCarp().solve(network);
 
         assertThat(flow.value()).isEqualTo(42);
-        assertThat(flow.flow(1, 2)).isEqualTo(42);
-        assertThat(flow.flow(2, 1)).isEqualTo(0);
+        assertThat(flow.flow().get(1).get(2)).isEqualTo(42);
+        assertThat(flow.flow().get(2).get(1)).isEqualTo(0);
     }
 
 }

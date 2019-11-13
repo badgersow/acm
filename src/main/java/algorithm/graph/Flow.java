@@ -1,9 +1,11 @@
 package algorithm.graph;
 
+import java.util.Map;
+
 public interface Flow {
 
     int value();
 
-    int flow(int u, int v);
+    Map<Integer, Map<Integer, Integer>> flow();
 
 }
