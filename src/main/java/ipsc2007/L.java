@@ -32,14 +32,14 @@ public class L {
 
         // If we draw cylinder with ≤ raduis
         for (int drawR = 1; drawR <= top; drawR++) {
-            final double minHToPick = Math.floor(1 + g(T - 1, top) - g(T - 1, drawR));
+            final double minHToPick = Math.min(1, Math.ceil(g(T - 1, top) - g(T - 1, drawR)));
 
             // Don't pick
-            result += minHToPick * g(T - 1, top);
+            result += (minHToPick - 1) * g(T - 1, top);
 
             // Pick
             final double averageH = (minHToPick + H) / 2;
-            result += (averageH + g(T - 1, drawR)) * (H - minHToPick) / H;
+            result += (averageH + g(T - 1, drawR)) * (H - minHToPick + 1);
         }
 
         // Normalize on probability of drawing ≤ radius
