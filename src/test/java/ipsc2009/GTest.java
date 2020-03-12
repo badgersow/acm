@@ -25,11 +25,19 @@ class GTest {
 
     @Test
     public void sample() {
-        initialize("3\n1 10\n2 3\n3 3 ");
+        test("3\n1 10\n2 3\n3 3", "0/1\n1/9\n11/27");
+    }
+
+    @Test
+    public void trivial() {
+        test("1\n1 1", "0/1");
+    }
+
+    private void test(String input, String output) {
+        initialize(input);
         new G().solve();
         final String result = stdoutMock.toString();
-
-        assertThat(result).isEqualTo("0/1\n1/9\n11/27");
+        assertThat(result.trim()).isEqualTo(output.trim());
     }
 
 }
