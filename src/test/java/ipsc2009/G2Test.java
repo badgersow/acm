@@ -41,8 +41,8 @@ class G2Test {
 
     @Test
     public void fileTest() throws Exception {
-        final String input = readFile("/g1.in");
-        final String output = readFile("/g1.out");
+        final String input = readFile("/ispc2009/g1.in");
+        final String output = readFile("/ispc2009/g1.out");
 
         test(input, output);
     }
