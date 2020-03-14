@@ -8,7 +8,7 @@ class CsesIntroductoryMissingNumberTest extends AcmTest {
     }
 
     @Test
-    public void sample() {
+    public void sample() throws Exception {
         compare("5 2 3 1 5", "4");
     }
 }

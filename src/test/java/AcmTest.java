@@ -21,7 +21,7 @@ public abstract class AcmTest {
         System.setOut(new PrintStream(new TeeOutputStream(System.out, stdoutMock)));
     }
 
-    void compare(String input, String output) {
+    void compare(String input, String output) throws Exception {
         initialize(input);
         processInput();
         final String result = stdoutMock.toString();
@@ -32,6 +32,6 @@ public abstract class AcmTest {
         return new Scanner(AcmTest.class.getResourceAsStream(filename), "UTF-8").useDelimiter("\\A").next();
     }
 
-    abstract void processInput();
+    abstract void processInput() throws Exception;
 
 }
