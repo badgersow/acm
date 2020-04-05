@@ -21,11 +21,19 @@ public abstract class AcmTest {
         System.setOut(new PrintStream(new TeeOutputStream(System.out, stdoutMock)));
     }
 
-    void compare(String input, String output) throws Exception {
-        initialize(input);
-        processInput();
-        final String result = stdoutMock.toString();
-        assertThat(result.trim()).isEqualTo(output.trim());
+    void compare(long input, long output) {
+        compare(String.valueOf(input), String.valueOf(output));
+    }
+
+    void compare(String input, String output) {
+        try {
+            initialize(input);
+            processInput();
+            final String result = stdoutMock.toString();
+            assertThat(result.trim()).isEqualTo(output.trim());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     String readFile(String filename) {
