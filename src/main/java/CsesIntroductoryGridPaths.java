@@ -18,18 +18,18 @@ public class CsesIntroductoryGridPaths {
     }
 
     private long ways(char[] pattern, int position, int I, int J, boolean[][] board) {
-        if (I == n - 1 && J == n - 1 && position < pattern.length) {
+        if (I == n - 1 && J == 0 && position < pattern.length) {
             return 0;
         }
 
         if (position == pattern.length) {
-            if (I != n - 1 || J != n - 1) {
+            if (I != n - 1 || J != 0) {
                 return 0;
             }
 
             for (int i = 0; i < board.length; i++) {
                 for (int j = 0; j < board.length; j++) {
-                    if (i == n - 1 && j == n - 1) {
+                    if (i == n - 1 && j == 0) {
                         continue;
                     }
                     if (!board[i][j]) {
