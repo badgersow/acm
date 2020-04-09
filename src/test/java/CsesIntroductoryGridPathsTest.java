@@ -1,0 +1,21 @@
+import org.junit.jupiter.api.Test;
+
+public class CsesIntroductoryGridPathsTest extends AcmTest {
+
+    @Override
+    void processInput() throws Exception {
+        new CsesIntroductoryGridPaths().solve();
+    }
+
+    @Test
+    public void sample() {
+        compare("??????R??????U??????????????????????????LD????D?", "201");
+    }
+
+    @Test
+    public void sample3() {
+        compare("RRDLLDRR", "1");
+    }
+
+
+}
