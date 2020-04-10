@@ -42,8 +42,10 @@ public class CsesSortingApartments {
         int peopleIndex = 0, apartmentIndex = 0;
         int result = 0;
         while (peopleIndex < n && apartmentIndex < m) {
-            if (people[peopleIndex] + k >= apartments[apartmentIndex] &&
-                    apartments[apartmentIndex] >= people[peopleIndex] - k) {
+            final int expectation = people[peopleIndex];
+            final int reality = apartments[apartmentIndex];
+            if (expectation + k >= reality &&
+                    reality >= expectation - k) {
                 // This guy gets an apartment
                 result++;
                 peopleIndex++;
@@ -51,16 +53,14 @@ public class CsesSortingApartments {
                 continue;
             }
 
-            if (people[peopleIndex] + k < apartments[apartmentIndex]) {
+            if (expectation + k < reality) {
                 // The guy wants a smaller apartment. He is out.
                 peopleIndex++;
                 continue;
             }
 
-            if (people[peopleIndex] - k > apartments[apartmentIndex]) {
-                // The guy wants a larger apartment. Current apartment is shit.
-                apartmentIndex++;
-            }
+            // The guy wants a larger apartment. Current apartment is shit.
+            apartmentIndex++;
         }
 
         out.println(result);
