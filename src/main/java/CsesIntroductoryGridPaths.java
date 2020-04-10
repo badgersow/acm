@@ -11,13 +11,15 @@ public class CsesIntroductoryGridPaths {
 
     public void solve() throws Exception {
         final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        final char[] pattern = in.readLine().toCharArray();
+        pattern = in.readLine().toCharArray();
         final long board = 0L;
 
-        System.out.println(ways(pattern, 0, 0, 0, board));
+        System.out.println(ways(0, 0, 0, board));
     }
 
-    private long ways(char[] pattern, int position, int I, int J, long board) {
+    char[] pattern;
+
+    private long ways(int position, int I, int J, long board) {
         // If we are out of bounds or on illegal step
         if (I < 0 || I >= n || J < 0 || J >= n || (board & (1L << (I * n + J))) != 0) {
             return 0;
@@ -32,7 +34,7 @@ public class CsesIntroductoryGridPaths {
         if (position < pattern.length - 1
                 && (((board & (1L << (n * (n - 1)))) != 0) ||
                 (((board & (1L << (n * (n - 2)))) != 0) &&
-                ((board & (1L << (n * (n - 1) + 1))) != 0)))) {
+                        ((board & (1L << (n * (n - 1) + 1))) != 0)))) {
             return 0;
         }
 
@@ -59,16 +61,16 @@ public class CsesIntroductoryGridPaths {
         long result = 0;
         char command = pattern[position];
         if (command == 'U' || command == '?') {
-            result += ways(pattern, position + 1, I - 1, J, newBoard);
+            result += ways(position + 1, I - 1, J, newBoard);
         }
         if (command == 'D' || command == '?') {
-            result += ways(pattern, position + 1, I + 1, J, newBoard);
+            result += ways(position + 1, I + 1, J, newBoard);
         }
         if (command == 'L' || command == '?') {
-            result += ways(pattern, position + 1, I, J - 1, newBoard);
+            result += ways(position + 1, I, J - 1, newBoard);
         }
         if (command == 'R' || command == '?') {
-            result += ways(pattern, position + 1, I, J + 1, newBoard);
+            result += ways(position + 1, I, J + 1, newBoard);
         }
 
         return result;
