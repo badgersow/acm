@@ -30,8 +30,9 @@ public class CsesSortingConcertTickets {
 
         for (int i = 0; i < n; i++) {
             final int price = nextInt();
-            if (tickets.containsKey(price)) {
-                tickets.put(price, tickets.get(price) + 1);
+            final Integer peopleWithPrice = tickets.get(price);
+            if (peopleWithPrice != null) {
+                tickets.put(price, peopleWithPrice + 1);
             } else {
                 tickets.put(price, 1);
             }
@@ -43,9 +44,11 @@ public class CsesSortingConcertTickets {
             if (sellPrice == null) {
                 out.println(-1);
             } else {
-                tickets.put(sellPrice, tickets.get(sellPrice) - 1);
-                if (tickets.get(sellPrice) == 0) {
+                final Integer peopleWithPrice = tickets.get(sellPrice);
+                if (peopleWithPrice == 1) {
                     tickets.remove(sellPrice);
+                } else {
+                    tickets.put(sellPrice, peopleWithPrice - 1);
                 }
                 out.println(sellPrice);
             }
