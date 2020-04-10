@@ -1,10 +1,10 @@
 import org.junit.jupiter.api.Test;
 
-public class CsesIntroductoryDistinctNumbersTest extends AcmTest {
+public class CsesSortingDistinctNumbersTest extends AcmTest {
 
     @Override
     void processInput() throws Exception {
-        new CsesIntroductoryDistinctNumbers().solve();
+        new CsesSortingDistinctNumbers().solve();
     }
 
     @Test

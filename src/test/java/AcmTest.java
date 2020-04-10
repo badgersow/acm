@@ -15,7 +15,7 @@ public abstract class AcmTest {
 
     void initialize(String input) {
         stdinMock = new ByteArrayInputStream(input.getBytes());
-        stdoutMock = new ByteArrayOutputStream(100_000_000);
+        stdoutMock = new ByteArrayOutputStream(10_000_000);
 
         System.setIn(stdinMock);
         System.setOut(new PrintStream(new TeeOutputStream(System.out, stdoutMock)));
