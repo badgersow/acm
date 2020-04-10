@@ -18,7 +18,26 @@ public class CsesIntroductoryGridPaths {
     }
 
     private long ways(char[] pattern, int position, int I, int J, long board) {
-        if (I == n - 1 && J == 0 && position < pattern.length) {
+        // If we are out of bounds or on illegal step
+        if (I < 0 || I >= n || J < 0 || J >= n || (board & (1L << (I * n + J))) != 0) {
+            return 0;
+        }
+
+        // If we don't have enough steps to reach the target
+        if (J + (n - 1 - I) > (pattern.length - position)) {
+            return 0;
+        }
+
+        // Check if we can't reach the target
+        if (position < pattern.length - 1
+                && (((board & (1L << (n * (n - 1)))) != 0) ||
+                (((board & (1L << (n * (n - 2)))) != 0) &&
+                ((board & (1L << (n * (n - 1) + 1))) != 0)))) {
+            return 0;
+        }
+
+        // Reached the target ahead of time
+        if (position < pattern.length && I == n - 1 && J == 0) {
             return 0;
         }
 
@@ -34,9 +53,6 @@ public class CsesIntroductoryGridPaths {
             return 1;
         }
 
-        if (I < 0 || I >= n || J < 0 || J >= n || (board & (1L << (I * n + J))) != 0) {
-            return 0;
-        }
 
         long newBoard = board | (1L << (I * n + J));
 
