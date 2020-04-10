@@ -2,7 +2,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StreamTokenizer;
-import java.util.TreeSet;
+import java.util.TreeMap;
 
 public class CsesSortingConcertTickets {
 
@@ -26,19 +26,27 @@ public class CsesSortingConcertTickets {
 
     public void solve() throws Exception {
         final int n = nextInt(), m = nextInt();
-        final TreeSet<Integer> tickets = new TreeSet<>();
+        final TreeMap<Integer, Integer> tickets = new TreeMap();
 
         for (int i = 0; i < n; i++) {
-            tickets.add(nextInt());
+            final int price = nextInt();
+            if (tickets.containsKey(price)) {
+                tickets.put(price, tickets.get(price) + 1);
+            } else {
+                tickets.put(price, 1);
+            }
         }
 
         for (int i = 0; i < m; i++) {
             final int maxPrice = nextInt();
-            final Integer sellPrice = tickets.floor(maxPrice);
+            final Integer sellPrice = tickets.floorKey(maxPrice);
             if (sellPrice == null) {
                 out.println(-1);
             } else {
-                tickets.remove(sellPrice);
+                tickets.put(sellPrice, tickets.get(sellPrice) - 1);
+                if (tickets.get(sellPrice) == 0) {
+                    tickets.remove(sellPrice);
+                }
                 out.println(sellPrice);
             }
         }
