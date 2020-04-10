@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StreamTokenizer;
+import java.util.Map;
 import java.util.TreeMap;
 
 public class CsesSortingConcertTickets {
@@ -40,17 +41,19 @@ public class CsesSortingConcertTickets {
 
         for (int i = 0; i < m; i++) {
             final int maxPrice = nextInt();
-            final Integer sellPrice = tickets.floorKey(maxPrice);
-            if (sellPrice == null) {
+            final Map.Entry<Integer, Integer> entry = tickets.floorEntry(maxPrice);
+
+            if (entry == null) {
                 out.println(-1);
             } else {
-                final Integer peopleWithPrice = tickets.get(sellPrice);
+                final Integer price = entry.getKey();
+                final Integer peopleWithPrice = entry.getValue();
                 if (peopleWithPrice == 1) {
-                    tickets.remove(sellPrice);
+                    tickets.remove(price);
                 } else {
-                    tickets.put(sellPrice, peopleWithPrice - 1);
+                    tickets.put(price, peopleWithPrice - 1);
                 }
-                out.println(sellPrice);
+                out.println(price);
             }
         }
 
