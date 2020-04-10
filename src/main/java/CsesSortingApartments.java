@@ -2,7 +2,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StreamTokenizer;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class CsesSortingApartments {
 
@@ -26,24 +28,24 @@ public class CsesSortingApartments {
 
     public void solve() throws Exception {
         final int n = nextInt(), m = nextInt(), k = nextInt();
-        final int[] people = new int[n], apartments = new int[m];
+        final List<Integer> people = new ArrayList<>(), apartments = new ArrayList<>();
 
         for (int i = 0; i < n; i++) {
-            people[i] = nextInt();
+            people.add(nextInt());
         }
 
         for (int i = 0; i < m; i++) {
-            apartments[i] = nextInt();
+            apartments.add(nextInt());
         }
 
-        Arrays.sort(people);
-        Arrays.sort(apartments);
+        Collections.sort(people);
+        Collections.sort(apartments);
 
         int peopleIndex = 0, apartmentIndex = 0;
         int result = 0;
         while (peopleIndex < n && apartmentIndex < m) {
-            final int expectation = people[peopleIndex];
-            final int reality = apartments[apartmentIndex];
+            final int expectation = people.get(peopleIndex);
+            final int reality = apartments.get(apartmentIndex);
             if (expectation + k >= reality &&
                     reality >= expectation - k) {
                 // This guy gets an apartment
