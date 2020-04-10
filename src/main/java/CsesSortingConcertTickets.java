@@ -26,7 +26,7 @@ public class CsesSortingConcertTickets {
 
     public void solve() throws Exception {
         final int n = nextInt(), m = nextInt();
-        final TreeMap<Integer, Integer> tickets = new TreeMap();
+        final TreeMap<Integer, Integer> tickets = new TreeMap<>();
 
         for (int i = 0; i < n; i++) {
             final int price = nextInt();
