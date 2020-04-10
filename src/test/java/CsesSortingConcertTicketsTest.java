@@ -10,4 +10,12 @@ public class CsesSortingConcertTicketsTest extends AcmTest {
     public void sample() {
         compare("5 3 5 3 7 8 5 4 8 3", " 3\n8\n-1");
     }
+
+    @Test
+    public void tle1() {
+        compare(
+                readFile("/cses_sorting_concert_ticket_tle_in_1.txt"),
+                readFile("/cses_sorting_concert_ticket_tle_out_1.txt"));
+    }
+
 }

@@ -1,5 +1,3 @@
-import org.apache.commons.io.output.TeeOutputStream;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -18,7 +16,7 @@ public abstract class AcmTest {
         stdoutMock = new ByteArrayOutputStream(10_000_000);
 
         System.setIn(stdinMock);
-        System.setOut(new PrintStream(new TeeOutputStream(System.out, stdoutMock)));
+        System.setOut(new PrintStream(stdoutMock));
     }
 
     void compare(long input, long output) {
