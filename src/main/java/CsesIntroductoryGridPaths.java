@@ -1,5 +1,7 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.HashSet;
+import java.util.Set;
 
 public class CsesIntroductoryGridPaths {
 
@@ -8,72 +10,76 @@ public class CsesIntroductoryGridPaths {
     }
 
     final int n = 7;
+    final int length = 48;
 
     public void solve() throws Exception {
         final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        pattern = in.readLine().toCharArray();
-        final long board = 0L;
+        final String pattern = in.readLine();
 
-        System.out.println(ways(0, 0, 0, board));
+        final char[] part1 = pattern.substring(0, length / 2).toCharArray();
+        final char[] part2Rev = new StringBuffer(pattern.substring(length / 2)).reverse().toString().toCharArray();
+
+        final Set<Long> middle1 = new HashSet<>();
+
+        fillMiddle(part1, middle1, code(0, 0, 0, 0), n - 1, 0);
+
+        System.out.println(middle1.size());
     }
 
-    char[] pattern;
+    private void fillMiddle(char[] pattern, Set<Long> middle, long code, int illegalI, int illegalJ) {
+        final long mask = mask(code);
+        final int I = i(code), J = j(code), position = position(code);
 
-    private long ways(int position, int I, int J, long board) {
         // If we are out of bounds or on illegal step
-        if (I < 0 || I >= n || J < 0 || J >= n || (board & (1L << (I * n + J))) != 0) {
-            return 0;
-        }
-
-        // If we don't have enough steps to reach the target
-        if (J + (n - 1 - I) > (pattern.length - position)) {
-            return 0;
-        }
-
-        // Check if we can't reach the target
-        if (position < pattern.length - 1
-                && (((board & (1L << (n * (n - 1)))) != 0) ||
-                (((board & (1L << (n * (n - 2)))) != 0) &&
-                        ((board & (1L << (n * (n - 1) + 1))) != 0)))) {
-            return 0;
-        }
-
-        // Reached the target ahead of time
-        if (position < pattern.length && I == n - 1 && J == 0) {
-            return 0;
+        if (I < 0 || I >= n || J < 0 || J >= n ||
+                (mask & (1L << (I * n + J))) != 0 ||
+                (I == illegalI && J == illegalJ)) {
+            return;
         }
 
         if (position == pattern.length) {
-            if (I != n - 1 || J != 0) {
-                return 0;
-            }
-
-            if (board != ((1L << (n * n)) - 1) - (1L << (n * (n - 1)))) {
-                return 0;
-            }
-
-            return 1;
+            middle.add(code);
+            return;
         }
 
+        long newMask = mask | (1L << (I * n + J));
 
-        long newBoard = board | (1L << (I * n + J));
-
-        long result = 0;
         char command = pattern[position];
         if (command == 'U' || command == '?') {
-            result += ways(position + 1, I - 1, J, newBoard);
+            fillMiddle(pattern, middle, code(newMask, I - 1, J, position + 1), illegalI, illegalJ);
         }
         if (command == 'D' || command == '?') {
-            result += ways(position + 1, I + 1, J, newBoard);
+            fillMiddle(pattern, middle, code(newMask, I + 1, J, position + 1), illegalI, illegalJ);
         }
         if (command == 'L' || command == '?') {
-            result += ways(position + 1, I, J - 1, newBoard);
+            fillMiddle(pattern, middle, code(newMask, I, J - 1, position + 1), illegalI, illegalJ);
         }
         if (command == 'R' || command == '?') {
-            result += ways(position + 1, I, J + 1, newBoard);
+            fillMiddle(pattern, middle, code(newMask, I, J + 1, position + 1), illegalI, illegalJ);
         }
+    }
 
-        return result;
+    long code(long mask, long i, long j, long position) {
+        return mask | // First 49 bits
+                (i << 49) | // Next 3 bits
+                (j << 52) | // Next 3 bits
+                (position << 55); // Next 6 bits
+    }
+
+    long mask(long code) {
+        return code & ((1L << 49) - 1);
+    }
+
+    int i(long code) {
+        return (int) ((code >> 49) & 7);
+    }
+
+    int j(long code) {
+        return (int) ((code >> 52) & 7);
+    }
+
+    int position(long code) {
+        return (int) ((code >> 55) & 63);
     }
 
 }
