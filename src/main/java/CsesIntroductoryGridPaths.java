@@ -22,10 +22,11 @@ public class CsesIntroductoryGridPaths {
     int pos;
 
     private long ways(int i, int j) {
-        if (pos == p.length) {
-            if (i == n - 1 && j == 0) {
-                return 1;
-            }
+        if (i == n - 1 && j == 0 && pos == p.length) {
+            return 1;
+        }
+
+        if (i == n - 1 && j == 0 || pos == p.length) {
             return 0;
         }
 
