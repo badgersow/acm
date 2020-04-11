@@ -29,9 +29,16 @@ public class CsesIntroductoryGridPaths {
             return 0;
         }
 
-        // if I hit the wall and can't proceed
+        // If I hit the wall and can't proceed
         if ((i == 0 || i == n - 1) && j > 0 && j < n - 1 && !v[i * n + j - 1] && !v[i * n + j + 1] ||
                 (j == 0 || j == n - 1) && i > 0 && i < n - 1 && !v[(i - 1) * n + j] && !v[(i + 1) * n + j]) {
+            return 0;
+        }
+
+        // If I hit my own path and can't proceed
+        if (i > 0 && i < n - 1 && j > 0 && j < n - 1 &&
+                (v[(i + 1) * n + j] && v[(i - 1) * n + j] && !v[i * n + j - 1] && !v[i * n + j + 1] ||
+                        !v[(i + 1) * n + j] && !v[(i - 1) * n + j] && v[i * n + j - 1] && v[i * n + j + 1])) {
             return 0;
         }
 
