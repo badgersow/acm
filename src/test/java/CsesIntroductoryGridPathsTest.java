@@ -1,20 +1,10 @@
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class CsesIntroductoryGridPathsTest extends AcmTest {
 
-    private CsesIntroductoryGridPaths service;
-
-    @BeforeEach
-    public void setup() {
-        service = new CsesIntroductoryGridPaths();
-    }
-
     @Override
     void processInput() throws Exception {
-        service.solve();
+        new CsesIntroductoryGridPaths().solve();
     }
 
     @Test
@@ -52,19 +42,4 @@ public class CsesIntroductoryGridPathsTest extends AcmTest {
         compare("????????????????????????????????????????????????", "88418");
     }
 
-    @Test
-    public void encoding() {
-        CsesIntroductoryGridPaths service = new CsesIntroductoryGridPaths();
-
-        final long mask = 562949953320812L;
-        final long i = 1;
-        final long j = 5;
-        final long position = 41;
-
-        final long code = service.code(mask, i, j, position);
-        assertThat(service.mask(code)).isEqualTo(mask);
-        assertThat(service.i(code)).isEqualTo(i);
-        assertThat(service.j(code)).isEqualTo(j);
-        assertThat(service.position(code)).isEqualTo(position);
-    }
 }
