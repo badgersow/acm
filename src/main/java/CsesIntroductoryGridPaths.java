@@ -11,66 +11,59 @@ public class CsesIntroductoryGridPaths {
 
     public void solve() throws Exception {
         final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        pattern = in.readLine().toCharArray();
-        final long board = 0L;
+        p = in.readLine().toCharArray();
+        v = new boolean[n * n];
 
-        System.out.println(ways(0, 0, 0, board));
+        System.out.println(ways(0, 0));
     }
 
-    char[] pattern;
+    char[] p;
+    boolean[] v;
+    int pos;
 
-    private long ways(int position, int I, int J, long board) {
-        // If we are out of bounds or on illegal step
-        if (I < 0 || I >= n || J < 0 || J >= n || (board & (1L << (I * n + J))) != 0) {
-            return 0;
-        }
-
-        // If we don't have enough steps to reach the target
-        if (J + (n - 1 - I) > (pattern.length - position)) {
-            return 0;
-        }
-
-        // Check if we can't reach the target
-        if (position < pattern.length - 1
-                && (((board & (1L << (n * (n - 1)))) != 0) ||
-                (((board & (1L << (n * (n - 2)))) != 0) &&
-                        ((board & (1L << (n * (n - 1) + 1))) != 0)))) {
-            return 0;
-        }
-
-        // Reached the target ahead of time
-        if (position < pattern.length && I == n - 1 && J == 0) {
-            return 0;
-        }
-
-        if (position == pattern.length) {
-            if (I != n - 1 || J != 0) {
-                return 0;
+    private long ways(int i, int j) {
+        if (pos == p.length) {
+            if (i == n - 1 && j == 0) {
+                return 1;
             }
-
-            if (board != ((1L << (n * n)) - 1) - (1L << (n * (n - 1)))) {
-                return 0;
-            }
-
-            return 1;
+            return 0;
         }
 
-
-        long newBoard = board | (1L << (I * n + J));
+        // if I hit the wall and can't proceed
+        if ((i == 0 || i == n - 1) && j > 0 && j < n - 1 && !v[i * n + j - 1] && !v[i * n + j + 1] ||
+                (j == 0 || j == n - 1) && i > 0 && i < n - 1 && !v[(i - 1) * n + j] && !v[(i + 1) * n + j]) {
+            return 0;
+        }
 
         long result = 0;
-        char command = pattern[position];
-        if (command == 'U' || command == '?') {
-            result += ways(position + 1, I - 1, J, newBoard);
+        char command = p[pos];
+        if ((command == 'U' || command == '?') && (i > 0 && !v[(i - 1) * n + j])) {
+            v[i * n + j] = true;
+            pos++;
+            result += ways(i - 1, j);
+            pos--;
+            v[i * n + j] = false;
         }
-        if (command == 'D' || command == '?') {
-            result += ways(position + 1, I + 1, J, newBoard);
+        if ((command == 'D' || command == '?') && (i < n - 1 && !v[(i + 1) * n + j])) {
+            v[i * n + j] = true;
+            pos++;
+            result += ways(i + 1, j);
+            pos--;
+            v[i * n + j] = false;
         }
-        if (command == 'L' || command == '?') {
-            result += ways(position + 1, I, J - 1, newBoard);
+        if ((command == 'L' || command == '?') && (j > 0 && !v[i * n + j - 1])) {
+            v[i * n + j] = true;
+            pos++;
+            result += ways(i, j - 1);
+            pos--;
+            v[i * n + j] = false;
         }
-        if (command == 'R' || command == '?') {
-            result += ways(position + 1, I, J + 1, newBoard);
+        if ((command == 'R' || command == '?') && (j < n - 1 && !v[i * n + j + 1])) {
+            v[i * n + j] = true;
+            pos++;
+            result += ways(i, j + 1);
+            pos--;
+            v[i * n + j] = false;
         }
 
         return result;
