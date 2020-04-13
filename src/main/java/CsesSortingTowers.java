@@ -44,14 +44,14 @@ public class CsesSortingTowers {
             int l = 0, r = lisLength;
             while (l + 1 < r) {
                 int w = (l + r) / 2;
-                if (d[w] < current) {
+                if (d[w] <= current) {
                     l = w;
                 } else {
                     r = w;
                 }
             }
 
-            final int i = (d[r] < current) ? r : (d[l + 1] < current) ? l + 1 : l;
+            final int i = (d[r] <= current) ? r : (d[l + 1] < current) ? l + 1 : l;
 
             d[i + 1] = Math.min(d[i + 1], current);
             lisLength = Math.max(lisLength, i + 1);
