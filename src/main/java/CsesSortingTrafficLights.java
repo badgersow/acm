@@ -33,9 +33,9 @@ public class CsesSortingTrafficLights {
                     next = requireNonNull(lights.ceiling(current));
 
             lights.add(current);
-            countByLength.compute(next - previous, (k, v) -> (requireNonNull(v) == 1) ? null : v - 1);
-            countByLength.compute(current - previous, (k, v) -> (v == null) ? 1 : v + 1);
-            countByLength.compute(next - current, (k, v) -> (v == null) ? 1 : v + 1);
+            decrement(countByLength, next - previous);
+            increment(countByLength, current - previous);
+            increment(countByLength, next - current);
 
             out.print(countByLength.lastKey());
             if (i < n - 1) {
@@ -44,6 +44,25 @@ public class CsesSortingTrafficLights {
         }
 
         out.flush();
+    }
+
+    private void decrement(TreeMap<Integer, Integer> map, int length) {
+        final Integer currentValue = map.get(length);
+        if (currentValue == 1) {
+            map.remove(length);
+        } else {
+            map.put(length, currentValue - 1);
+        }
+    }
+
+    private void increment(TreeMap<Integer, Integer> map, int length) {
+        final Integer currentValue = map.get(length);
+        //noinspection Java8MapApi
+        if (currentValue == null) {
+            map.put(length, 1);
+        } else {
+            map.put(length, currentValue + 1);
+        }
     }
 
     private static class FastReader {
