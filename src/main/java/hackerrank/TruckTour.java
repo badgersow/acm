@@ -7,17 +7,25 @@ import java.util.Scanner;
 
 public class TruckTour {
 
-    private static int next(int index, int n) {
-        if (index == n - 1) {
-            return 0;
-        }
-        return index + 1;
-    }
-
     static int truckTour(int[][] petrolpumps) {
         // Assuming the truck can always complete the tour
-        final int n = petrolpumps.length;
-        return 0;
+        long tank = 0;
+        long minTank = 0;
+        int indexOfMinTank = 0;
+
+        for (int i = 0; i < petrolpumps.length; i++) {
+            int stationFuel = petrolpumps[i][0];
+            int nextDistance = petrolpumps[i][1];
+
+            if (tank < minTank) {
+                minTank = tank;
+                indexOfMinTank = i;
+            }
+
+            tank = tank + stationFuel - nextDistance;
+        }
+
+        return indexOfMinTank;
     }
 
     private static final Scanner scanner = new Scanner(System.in);
