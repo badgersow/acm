@@ -42,6 +42,9 @@ public class CsesSortingFactoryMachines {
         long produced = 0L;
         for (int value : a) {
             produced += time / value;
+            if (produced >= required) {
+                return true;
+            }
         }
         return produced >= required;
     }
