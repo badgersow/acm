@@ -2,7 +2,9 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CsesSortingSumOfFourValues {
 
@@ -16,13 +18,44 @@ public class CsesSortingSumOfFourValues {
 
     public void solve() throws Exception {
         final int n = in.nextInt();
-        final int sum = in.nextInt();
+        final int expectedSum = in.nextInt();
 
         final int[] a = new int[n];
         for (int i = 0; i < n; i++) {
             a[i] = in.nextInt();
         }
 
+        final Map<Integer, int[]> minPairSums = new HashMap<>();
+        final Map<Integer, int[]> maxPairSums = new HashMap<>();
+
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                final int sum = a[i] + a[j];
+                if (!minPairSums.containsKey(sum)) {
+                    minPairSums.put(sum, new int[]{i, j});
+                }
+                maxPairSums.put(sum, new int[]{i, j});
+            }
+        }
+
+        int[] result = null;
+        for (Map.Entry<Integer, int[]> minEntry : minPairSums.entrySet()) {
+            final int sum = minEntry.getKey();
+            final int[] maxIndices = maxPairSums.get(expectedSum - sum);
+            if (maxIndices != null) {
+                // Special case, need to make sure minIndex != maxIndex
+                if (minEntry.getValue()[1] < maxIndices[0]) {
+                    result = new int[]{minEntry.getValue()[0], minEntry.getValue()[1], maxIndices[0], maxIndices[1]};
+                    break;
+                }
+            }
+        }
+
+        if (result == null) {
+            out.println("IMPOSSIBLE");
+        } else {
+            out.println(String.format("%s %s %s %s", a[0] + 1, a[1] + 1, a[2] + 1, a[3] + 1));
+        }
         out.flush();
     }
 
