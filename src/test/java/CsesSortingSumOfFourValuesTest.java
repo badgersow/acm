@@ -8,7 +8,7 @@ public class CsesSortingSumOfFourValuesTest extends AcmTest {
 
     @Test
     public void sample() {
-        compare("8 15 3 2 5 8 1 3 2 3", "2 4 6 7");
+        compare("8 15 3 2 5 8 1 3 2 3", "1 5 4 6");
     }
 
     @Test

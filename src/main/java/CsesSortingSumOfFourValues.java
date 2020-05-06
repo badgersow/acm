@@ -2,6 +2,7 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,28 +26,32 @@ public class CsesSortingSumOfFourValues {
             a[i] = in.nextInt();
         }
 
-        final Map<Integer, int[]> minPairSums = new HashMap<>();
-        final Map<Integer, int[]> maxPairSums = new HashMap<>();
+        final Map<Integer, List<int[]>> sumByPair = new HashMap<>();
 
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
                 final int sum = a[i] + a[j];
-                if (!minPairSums.containsKey(sum)) {
-                    minPairSums.put(sum, new int[]{i, j});
+                if (!sumByPair.containsKey(sum)) {
+                    sumByPair.put(sum, new ArrayList<>());
                 }
-                maxPairSums.put(sum, new int[]{i, j});
+
+                sumByPair.get(sum).add(new int[]{i, j});
             }
         }
 
         int[] result = null;
-        for (Map.Entry<Integer, int[]> minEntry : minPairSums.entrySet()) {
-            final int sum = minEntry.getKey();
-            final int[] maxIndices = maxPairSums.get(expectedSum - sum);
-            if (maxIndices != null) {
-                // Special case, need to make sure minIndex != maxIndex
-                if (minEntry.getValue()[1] < maxIndices[0]) {
-                    result = new int[]{minEntry.getValue()[0], minEntry.getValue()[1], maxIndices[0], maxIndices[1]};
-                    break;
+        main: for (Map.Entry<Integer, List<int[]>> firstTerm : sumByPair.entrySet()) {
+            final List<int[]> secondTerm = sumByPair.get(expectedSum - firstTerm.getKey());
+            if (secondTerm == null) {
+                continue;
+            }
+
+            for (int[] firstPair : firstTerm.getValue()) {
+                for (int[] secondPair : secondTerm) {
+                    if (firstPair[0] != secondPair[0] && firstPair[1] != secondPair[1] && firstPair[0] != secondPair[1] && firstPair[1] != secondPair[0]) {
+                        result = new int[]{firstPair[0], firstPair[1], secondPair[0], secondPair[1]};
+                        break main;
+                    }
                 }
             }
         }
@@ -54,7 +59,7 @@ public class CsesSortingSumOfFourValues {
         if (result == null) {
             out.println("IMPOSSIBLE");
         } else {
-            out.println(String.format("%s %s %s %s", a[0] + 1, a[1] + 1, a[2] + 1, a[3] + 1));
+            out.println(String.format("%s %s %s %s", result[0] + 1, result[1] + 1, result[2] + 1, result[3] + 1));
         }
         out.flush();
     }
