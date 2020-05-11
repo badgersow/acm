@@ -31,4 +31,22 @@ public class CsesSortingTrafficLightsTest extends AcmTest {
                 readFile("/cses_sorting_traffic_lights_tle_out_2.txt")
         );
     }
+
+    @Test
+    public void tle3() {
+        compare(
+                readFile("/cses_sorting_traffic_lights_tle_in_3.txt"),
+                readFile("/cses_sorting_traffic_lights_tle_out_3.txt")
+        );
+    }
+
+    @Test
+    public void tle4() {
+        compare(
+                readFile("/cses_sorting_traffic_lights_tle_in_4.txt"),
+                readFile("/cses_sorting_traffic_lights_tle_out_4.txt")
+        );
+    }
+
+
 }

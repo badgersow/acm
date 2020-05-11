@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static java.util.Objects.requireNonNull;
-
 public class CsesSortingTrafficLights {
 
     public static void main(String[] args) throws Exception {
@@ -33,8 +31,8 @@ public class CsesSortingTrafficLights {
 
         for (int i = 0; i < n; i++) {
             final int current = in.nextInt();
-            final int previous = requireNonNull(lights.floor(current)),
-                    next = requireNonNull(lights.ceiling(current));
+            final int previous = lights.floor(current),
+                    next = lights.ceiling(current);
 
             lights.add(current);
             decrement(countByLength, counts, next - previous);
@@ -50,7 +48,7 @@ public class CsesSortingTrafficLights {
         out.flush();
     }
 
-    private void decrement(Map<Integer, Integer> map, Set<Integer> set, int length) {
+    private static void decrement(Map<Integer, Integer> map, Set<Integer> set, int length) {
         final Integer currentValue = map.get(length);
         if (currentValue == 1) {
             map.remove(length);
@@ -60,7 +58,7 @@ public class CsesSortingTrafficLights {
         }
     }
 
-    private void increment(Map<Integer, Integer> map, Set<Integer> set, int length) {
+    private static void increment(Map<Integer, Integer> map, Set<Integer> set, int length) {
         final Integer currentValue = map.get(length);
         //noinspection Java8MapApi
         if (currentValue == null) {
@@ -73,7 +71,7 @@ public class CsesSortingTrafficLights {
 
     private static class FastReader {
 
-        private final int BUFFER_SIZE = 1 << 24;
+        private final int BUFFER_SIZE = 1 << 20;
         private DataInputStream din;
         private byte[] buffer;
         private int bufferPointer, bytesRead;
