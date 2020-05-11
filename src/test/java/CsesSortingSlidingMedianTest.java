@@ -20,4 +20,11 @@ public class CsesSortingSlidingMedianTest extends AcmTest {
     public void trivial2() {
         compare("10 2 1 2 3 4 5 6 7 8 9 10", "1 2 3 4 5 6 7 8 9");
     }
+
+    @Test
+    public void testTle1() {
+        compare(
+                readFile("/cses_sorting_sliding_median_tle_in_1.txt"),
+                readFile("/cses_sorting_sliding_median_tle_out_1.txt"));
+    }
 }
