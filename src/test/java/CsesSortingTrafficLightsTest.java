@@ -15,4 +15,12 @@ public class CsesSortingTrafficLightsTest extends AcmTest {
     public void trivial1() {
         compare("9 1 5", "5");
     }
+
+    @Test
+    public void tle1() {
+        compare(
+                readFile("/cses_sorting_traffic_lights_tle_in_1.txt"),
+                readFile("/cses_sorting_traffic_lights_tle_out_1.txt")
+        );
+    }
 }

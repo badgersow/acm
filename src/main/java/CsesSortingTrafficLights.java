@@ -2,8 +2,11 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.TreeMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 
 import static java.util.Objects.requireNonNull;
@@ -24,8 +27,9 @@ public class CsesSortingTrafficLights {
         lights.add(0);
         lights.add(x);
 
-        final TreeMap<Integer, Integer> countByLength = new TreeMap<>();
-        countByLength.put(x, 1);
+        final HashMap<Integer, Integer> countByLength = new HashMap<>();
+        final TreeSet<Integer> counts = new TreeSet<>(Comparator.reverseOrder());
+        increment(countByLength, counts, x);
 
         for (int i = 0; i < n; i++) {
             final int current = in.nextInt();
@@ -33,11 +37,11 @@ public class CsesSortingTrafficLights {
                     next = requireNonNull(lights.ceiling(current));
 
             lights.add(current);
-            decrement(countByLength, next - previous);
-            increment(countByLength, current - previous);
-            increment(countByLength, next - current);
+            decrement(countByLength, counts, next - previous);
+            increment(countByLength, counts, current - previous);
+            increment(countByLength, counts, next - current);
 
-            out.print(countByLength.lastKey());
+            out.print(counts.first());
             if (i < n - 1) {
                 out.print(' ');
             }
@@ -46,20 +50,22 @@ public class CsesSortingTrafficLights {
         out.flush();
     }
 
-    private void decrement(TreeMap<Integer, Integer> map, int length) {
+    private void decrement(Map<Integer, Integer> map, Set<Integer> set, int length) {
         final Integer currentValue = map.get(length);
         if (currentValue == 1) {
             map.remove(length);
+            set.remove(length);
         } else {
             map.put(length, currentValue - 1);
         }
     }
 
-    private void increment(TreeMap<Integer, Integer> map, int length) {
+    private void increment(Map<Integer, Integer> map, Set<Integer> set, int length) {
         final Integer currentValue = map.get(length);
         //noinspection Java8MapApi
         if (currentValue == null) {
             map.put(length, 1);
+            set.add(length);
         } else {
             map.put(length, currentValue + 1);
         }
