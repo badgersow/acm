@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
-import java.util.Set;
 
 import static java.util.Comparator.reverseOrder;
 
@@ -26,9 +26,9 @@ public class CsesSortingSlidingMedian {
         final int n = in.nextInt(), k = in.nextInt();
         final Queue<Integer> queue = new ArrayDeque<>();
         final int[] a = new int[k];
-        final Set<Integer> topSet = new HashSet<>();
+        final Map<Integer, Integer> topSet = new HashMap<>();
         final PriorityQueue<Integer> topHalf = new PriorityQueue<>();
-        final Set<Integer> bottomSet = new HashSet<>();
+        final Map<Integer, Integer> bottomSet = new HashMap<>();
         final PriorityQueue<Integer> bottomHalf = new PriorityQueue<>(reverseOrder());
 
         for (int i = 0; i < k; i++) {
@@ -38,13 +38,14 @@ public class CsesSortingSlidingMedian {
         }
 
         Arrays.sort(a);
+
         for (int i = 0; i < (k + 1) / 2; i++) {
             bottomHalf.add(a[i]);
-            bottomSet.add(a[i]);
+            add(bottomSet, a[i]);
         }
         for (int i = (k + 1) / 2; i < k; i++) {
             topHalf.add(a[i]);
-            topSet.add(a[i]);
+            add(topSet, a[i]);
         }
 
         out.print(bottomHalf.peek());
@@ -57,34 +58,46 @@ public class CsesSortingSlidingMedian {
             final Integer last = queue.remove();
             queue.add(next);
 
-            if (bottomSet.contains(last) && next <= bottomHalf.peek()) {
-                bottomHalf.remove(last);
-                bottomSet.remove(last);
+            while (!bottomSet.isEmpty() && !bottomSet.containsKey(bottomHalf.peek())) {
+                bottomHalf.remove();
+            }
+
+            while (!topHalf.isEmpty() && !topSet.containsKey(topHalf.peek())) {
+                topHalf.remove();
+            }
+
+            if (bottomSet.containsKey(last) && next <= bottomHalf.peek()) {
+                remove(bottomSet, last);
                 bottomHalf.add(next);
-                bottomSet.add(next);
-            } else if (topSet.contains(last) && next >= topHalf.peek()) {
-                topHalf.remove(last);
-                topSet.remove(last);
+                add(bottomSet, next);
+            } else if (topSet.containsKey(last) && next >= topHalf.peek()) {
+                remove(topSet, last);
                 topHalf.add(next);
-                topSet.add(next);
-            } else if (bottomSet.contains(last)) {
-                bottomHalf.remove(last);
-                bottomSet.remove(last);
+                add(topSet, next);
+            } else if (bottomSet.containsKey(last)) {
+                remove(bottomSet, last);
                 topHalf.add(next);
-                topSet.add(next);
+                add(topSet, next);
                 final Integer reminder = topHalf.remove();
-                topSet.remove(reminder);
+                remove(topSet, reminder);
                 bottomHalf.add(reminder);
-                bottomSet.add(reminder);
+                add(bottomSet, reminder);
             } else {
-                topHalf.remove(last);
-                topSet.remove(last);
+                remove(topSet, last);
                 bottomHalf.add(next);
-                bottomSet.add(next);
+                add(bottomSet, next);
                 final Integer reminder = bottomHalf.remove();
-                bottomSet.remove(reminder);
+                remove(bottomSet, reminder);
                 topHalf.add(reminder);
-                topSet.add(reminder);
+                add(topSet, reminder);
+            }
+
+            while (!bottomSet.isEmpty() && !bottomSet.containsKey(bottomHalf.peek())) {
+                bottomHalf.remove();
+            }
+
+            while (!topHalf.isEmpty() && !topSet.containsKey(topHalf.peek())) {
+                topHalf.remove();
             }
 
             out.print(bottomHalf.peek());
@@ -93,6 +106,24 @@ public class CsesSortingSlidingMedian {
 
         out.println();
         out.flush();
+    }
+
+    private void add(Map<Integer, Integer> map, Integer key) {
+        final Integer value = map.get(key);
+        if (value == null) {
+            map.put(key, 1);
+        } else {
+            map.put(key, value + 1);
+        }
+    }
+
+    private void remove(Map<Integer, Integer> map, Integer key) {
+        final Integer value = map.get(key);
+        if (value == 1) {
+            map.remove(key);
+        } else {
+            map.put(key, value - 1);
+        }
     }
 
     private static class FastReader {
