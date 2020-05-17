@@ -3,7 +3,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -22,24 +21,21 @@ public class CsesSortingRoomAllocation {
         int rooms = 0;
         final int[] roomByCustomer = new int[n];
         final TreeSet<Integer> freeRooms = new TreeSet<>();
-        final int[][] times = new int[2 * n][3];
+        final long[] codes = new long[2 * n];
 
         for (int i = 0; i < n; i++) {
-            times[i][0] = in.nextInt();
-            times[i][1] = 0; // Arrival
-            times[n + i][0] = in.nextInt();
-            times[n + i][1] = 1; // Departure
-            times[i][2] = times[n + i][2] = i;
+            final int arrival = in.nextInt(), departure = in.nextInt();
+            codes[i] = encode(true, i, arrival);
+            codes[n + i] = encode(false, i, departure);
         }
 
-        Arrays.sort(times,
-                Comparator.comparingInt((int[] a) -> a[0])
-                        .thenComparingInt(arr -> arr[1]));
+        Arrays.sort(codes);
 
-        for (int[] time : times) {
-            if (time[1] == 1) {
+        for (final long code : codes) {
+            final int position = position(code);
+            if (!isArrival(code)) {
                 // Departure
-                freeRooms.add(roomByCustomer[time[2]]);
+                freeRooms.add(roomByCustomer[position]);
             } else {
                 // Arrival
                 if (freeRooms.isEmpty()) {
@@ -47,7 +43,7 @@ public class CsesSortingRoomAllocation {
                 }
                 final int availableRoom = freeRooms.first();
                 freeRooms.remove(availableRoom);
-                roomByCustomer[time[2]] = availableRoom;
+                roomByCustomer[position] = availableRoom;
             }
         }
 
@@ -61,9 +57,24 @@ public class CsesSortingRoomAllocation {
         out.flush();
     }
 
+    public static long encode(boolean isArrival, long position, long time) {
+
+        return position |
+                (isArrival ? 0L : 1L) << 31 |
+                time << 32;
+    }
+
+    public static boolean isArrival(long code) {
+        return ((code >> 31) & 1) == 0;
+    }
+
+    public static int position(long code) {
+        return (int) (code & ((1L << 30) - 1));
+    }
+
     private static class FastReader {
 
-        private final int BUFFER_SIZE = 1 << 24;
+        private final int BUFFER_SIZE = 1 << 20;
         private DataInputStream din;
         private byte[] buffer;
         private int bufferPointer, bytesRead;
