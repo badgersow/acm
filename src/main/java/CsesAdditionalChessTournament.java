@@ -94,7 +94,8 @@ public class CsesAdditionalChessTournament {
         }
 
         int edges = sumDegrees / 2;
-        final StringBuilder result = new StringBuilder(edges + "\n");
+        final StringBuilder result = new StringBuilder(500_000);
+        result.append(edges + "\n");
         while (true) {
             if (root == null || edges < root.degree) {
                 out.println("IMPOSSIBLE");
@@ -184,7 +185,7 @@ public class CsesAdditionalChessTournament {
 
     private static class FastReader {
 
-        private final int BUFFER_SIZE = 1 << 24;
+        private final int BUFFER_SIZE = 1 << 20;
         private final DataInputStream din;
         private final byte[] buffer;
         private int bufferPointer, bytesRead;

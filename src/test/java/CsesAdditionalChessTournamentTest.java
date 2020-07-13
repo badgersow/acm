@@ -1,4 +1,3 @@
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -71,31 +70,37 @@ public class CsesAdditionalChessTournamentTest extends AcmTest {
     public void cses1() {
         compare("10 5 4 2 6 6 3 4 7 8 5", "25\n" +
                 "9 8\n" +
-                "9 5\n" +
                 "9 4\n" +
-                "9 10\n" +
+                "9 5\n" +
                 "9 1\n" +
-                "9 7\n" +
+                "9 10\n" +
                 "9 2\n" +
+                "9 7\n" +
                 "9 6\n" +
-                "8 5\n" +
                 "8 4\n" +
-                "8 10\n" +
+                "8 5\n" +
                 "8 1\n" +
-                "8 7\n" +
+                "8 10\n" +
                 "8 2\n" +
+                "8 7\n" +
                 "5 4\n" +
-                "5 10\n" +
                 "5 1\n" +
-                "5 7\n" +
-                "4 10\n" +
+                "5 10\n" +
+                "5 3\n" +
                 "4 6\n" +
-                "4 3\n" +
-                "2 1\n" +
-                "2 10\n" +
-                "7 6\n" +
-                "3 1\n");
+                "4 7\n" +
+                "4 2\n" +
+                "10 1\n" +
+                "10 3\n" +
+                "2 7\n" +
+                "6 1");
     }
 
+    @Test
+    public void testTle1() {
+        compare(
+                readFile("/cses_additional_chess_tournament_tle_in_1.txt"),
+                readFile("/cses_additional_chess_tournament_tle_out_1.txt"));
+    }
 
 }
