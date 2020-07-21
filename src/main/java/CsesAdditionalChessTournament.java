@@ -3,11 +3,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 
 public class CsesAdditionalChessTournament {
 
@@ -19,57 +17,26 @@ public class CsesAdditionalChessTournament {
 
     private final PrintWriter out = new PrintWriter(System.out);
 
-    static class Node {
-        int degree;
-
-        List<Integer> players;
-
-        Node next;
-
-        public Node(int degree) {
-            this(degree, new ArrayList<>(), null);
-        }
-
-        public Node(int degree, List<Integer> players, Node next) {
-            this.degree = degree;
-            this.players = players;
-            this.next = next;
-        }
-
-        @Override
-        public String toString() {
-            return "Node{" +
-                    "degree=" + degree +
-                    ", players=" + players +
-                    ", next=" + next +
-                    '}';
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Node node = (Node) o;
-            return degree == node.degree &&
-                    players.equals(node.players) &&
-                    Objects.equals(next, node.next);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(degree, players, next);
-        }
-    }
-
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void solve() throws Exception {
         final int n = in.nextInt();
-        final int[][] a = new int[n][];
+        final int MAX_DEGREE = 200_000;
+
+        final List[] nodes = new ArrayList[MAX_DEGREE + 1];
+        for (int i = 0; i < nodes.length; i++) {
+            nodes[i] = new ArrayList<>();
+        }
 
         int sumDegrees = 0;
-        for (int i = 0; i < n; i++) {
+        int maxDegree = 0;
+        for (int i = 1; i <= n; i++) {
             final int degree = in.nextInt();
-            a[i] = new int[]{i + 1, degree};
-            sumDegrees += degree;
+            // We don't care about degree 0
+            if (degree != 0) {
+                nodes[degree].add(i);
+                sumDegrees += degree;
+                maxDegree = Math.max(maxDegree, degree);
+            }
         }
 
         if (sumDegrees % 2 == 1) {
@@ -78,109 +45,56 @@ public class CsesAdditionalChessTournament {
             return;
         }
 
-        Arrays.sort(a, Comparator.comparingInt((int[] arr) -> arr[1]).reversed());
+        StringBuilder result = new StringBuilder();
+        result.append(sumDegrees / 2)
+                .append(System.lineSeparator());
 
-        Node root = new Node(a[0][1]);
-        Node current = root;
-        for (int i = 0; i < a.length; i++) {
-            if (a[i][1] < current.degree) {
-                // Create new node
-                Node next = new Node(a[i][1]);
-                current.next = next;
-                current = next;
+        while (maxDegree > 0) {
+            while (maxDegree > 0 && nodes[maxDegree].isEmpty()) {
+                maxDegree--;
             }
 
-            current.players.add(a[i][0]);
-        }
-
-        int edges = sumDegrees / 2;
-        final StringBuilder result = new StringBuilder(500_000);
-        result.append(edges + "\n");
-        while (true) {
-            if (root == null || edges < root.degree) {
-                out.println("IMPOSSIBLE");
-                out.flush();
-                return;
-            }
-            edges -= root.degree;
-            root = step(root, result);
-            if (edges == 0) {
+            if (maxDegree == 0) {
                 break;
             }
+
+            // Let's find the node with the highest degree, otherwise we are done.
+            final int nodeWithMaxDegree = removeLast(nodes[maxDegree]);
+            final List<int[]> nodesWithDegreesToAdd = new ArrayList<>();
+
+            int nodesLeft = maxDegree;
+            int currentDegree = maxDegree;
+            while (nodesLeft > 0) {
+                if (currentDegree == 0) {
+                    out.println("IMPOSSIBLE");
+                    out.flush();
+                    return;
+                }
+
+                if (nodes[currentDegree].isEmpty()) {
+                    currentDegree--;
+                } else {
+                    final int removedNode = removeLast(nodes[currentDegree]);
+                    nodesWithDegreesToAdd.add(new int[]{removedNode, currentDegree - 1});
+                    nodesLeft--;
+                    result
+                            .append(nodeWithMaxDegree)
+                            .append(" ")
+                            .append(removedNode)
+                            .append(System.lineSeparator());
+                }
+            }
+            for (int[] nodeWithDegree : nodesWithDegreesToAdd) {
+                nodes[nodeWithDegree[1]].add(nodeWithDegree[0]);
+            }
         }
 
-        out.println(result);
+        out.print(result);
         out.flush();
     }
 
-    /**
-     * @return null if the operation is not possible. Otherwise returns the next root.
-     */
-    static Node step(Node root, StringBuilder result) {
-        // First, let's look at the root's degree
-        int remainingNodes = root.degree;
-        int rootPlayer = root.players.get(root.players.size() - 1);
-        root.players.remove(root.players.size() - 1);
-
-        Node current = root.players.isEmpty() ? root.next : root;
-        while (remainingNodes > 0) {
-            if (current == null || current.degree == 0) {
-                // Impossible
-                return null;
-            }
-
-            if (current.players.size() <= remainingNodes) {
-                remainingNodes -= current.players.size();
-                for (Integer player : current.players) {
-                    result.append(rootPlayer)
-                            .append(" ")
-                            .append(player)
-                            .append("\n");
-                }
-                current.degree--;
-                current = current.next;
-                continue;
-            }
-
-            // We know that part of people will decrement and part will not.
-            Node second = new Node(current.degree - 1);
-            for (int i = 0; i < remainingNodes; i++) {
-                second.players.add(current.players.remove(current.players.size() - 1));
-                result.append(rootPlayer)
-                        .append(" ")
-                        .append(second.players.get(second.players.size() - 1))
-                        .append("\n");
-            }
-
-            second.next = current.next;
-            current.next = second;
-
-            current = current.next;
-            break;
-        }
-
-        Node lastToMerge = current;
-        current = root;
-
-        while (true) {
-            if (current == null || current.next == null) {
-                // Nothing to do
-                break;
-            }
-
-            // Merge
-            if (current.degree == current.next.degree) {
-                current.players.addAll(current.next.players);
-                current.next = current.next.next;
-            }
-
-            if (current == lastToMerge) {
-                break;
-            }
-            current = current.next;
-        }
-
-        return (root.players.isEmpty() || root.degree == 0) ? root.next : root;
+    private static int removeLast(List<Integer> list) {
+        return list.remove(list.size() - 1);
     }
 
     private static class FastReader {
