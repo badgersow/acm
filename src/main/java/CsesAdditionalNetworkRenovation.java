@@ -1,3 +1,4 @@
+import javax.management.BadAttributeValueExpException;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -18,46 +19,75 @@ public class CsesAdditionalNetworkRenovation {
 
     public void solve() throws Exception {
         final int n = in.nextInt();
-        final HashSet<Integer> degreeOne = new HashSet<>();
-        final HashSet<Integer> degreeTwo = new HashSet<>();
 
-        for (int i = 0; i < n - 1; i++) {
-            for (int node : new int[]{in.nextInt(), in.nextInt()}) {
-                if (degreeOne.contains(node)) {
-                    degreeOne.remove(node);
-                    degreeTwo.add(node);
-                } else if (!degreeTwo.contains(node)) {
-                    degreeOne.add(node);
-                }
+        graph = new ArrayList<>();
+        for (int i = 0; i < (n + 1); i++) {
+            graph.add(new ArrayList<>());
+        }
+
+        final int[] degrees = new int[n + 1];
+        int root = -1;
+
+        for (int i = 0; i < (n - 1); i++) {
+            final int u = in.nextInt(), v = in.nextInt();
+            graph.get(u).add(v);
+            graph.get(v).add(u);
+            degrees[u]++;
+            degrees[v]++;
+            if (root == -1 && degrees[u] > 1) {
+                root = u;
+            }
+            if (root == -1 && degrees[v] > 1) {
+                root = v;
             }
         }
 
-        final ArrayList<Integer> leafs = new ArrayList<>(degreeOne);
-        final int edges = (leafs.size() + 1) / 2;
+        // Let's find some tree root. This is any vertice with degree ≥ 2
+        visited = new boolean[n + 1];
+        dfs(root);
+
+        final int edges = (leaves.size() + 1) / 2;
         out.println(edges);
 
         // 1. Odd
-        if (leafs.size() % 2 == 1) {
+        if (leaves.size() % 2 == 1) {
             for (int i = 0; i < edges - 1; i++) {
-                out.print(leafs.get(i));
+                out.print(leaves.get(i));
                 out.print(" ");
-                out.println(leafs.get(leafs.size() - i - 1));
+                out.println(leaves.get(leaves.size() - i - 1));
             }
-            out.print(leafs.get(leafs.size() / 2));
+            out.print(leaves.get(leaves.size() / 2));
             out.print(" ");
-            out.println(leafs.get(leafs.size() - 1));
+            out.println(leaves.get(leaves.size() - 1));
         } else {
             for (int i = 0; i < edges - 1; i++) {
-                out.print(leafs.get(i));
+                out.print(leaves.get(i));
                 out.print(" ");
-                out.println(leafs.get(leafs.size() - i - 2));
+                out.println(leaves.get(leaves.size() - i - 2));
             }
-            out.print(leafs.get(leafs.size() / 2 - 1));
+            out.print(leaves.get(leaves.size() / 2 - 1));
             out.print(" ");
-            out.println(leafs.get(leafs.size() - 1));
+            out.println(leaves.get(leaves.size() - 1));
         }
 
         out.flush();
+
+    }
+
+    List<List<Integer>> graph;
+    List<Integer> leaves = new ArrayList<>();
+    boolean[] visited;
+
+    void dfs(int node) {
+        visited[node] = true;
+        if (graph.get(node).size() == 1) {
+            leaves.add(node);
+        }
+        for (Integer adjacent : graph.get(node)) {
+            if (!visited[adjacent]) {
+                dfs(adjacent);
+            }
+        }
     }
 
     private static class FastReader {
