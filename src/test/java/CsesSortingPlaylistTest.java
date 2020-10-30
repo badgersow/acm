@@ -1,9 +1,10 @@
 import org.junit.Test;
+import util.AcmTest;
 
 public class CsesSortingPlaylistTest extends AcmTest {
 
     @Override
-    void processInput() throws Exception {
+    public void processInput() throws Exception {
         new CsesSortingPlaylist().solve();
     }
 

@@ -1,5 +1,6 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import util.AcmTest;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertFalse;
@@ -15,7 +16,7 @@ public class CsesIntroductoryChessboardAndQueensTest extends AcmTest {
     }
 
     @Override
-    void processInput() throws Exception {
+    public void processInput() throws Exception {
         instance.solve();
     }
 

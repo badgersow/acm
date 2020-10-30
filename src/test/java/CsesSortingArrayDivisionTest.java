@@ -1,11 +1,12 @@
 import org.junit.jupiter.api.Test;
+import util.AcmTest;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class CsesSortingArrayDivisionTest extends AcmTest {
     @Override
-    void processInput() throws Exception {
+    public void processInput() throws Exception {
         new CsesSortingArrayDivision().solve();
     }
 

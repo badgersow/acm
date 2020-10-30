@@ -1,9 +1,10 @@
 import org.junit.jupiter.api.Test;
+import util.AcmTest;
 
 class CsesIntroductoryBitStringsTest extends AcmTest {
 
     @Override
-    void processInput() {
+    public void processInput() {
         new CsesIntroductoryBitStrings().solve();
     }
 

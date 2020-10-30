@@ -1,3 +1,5 @@
+package util;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -11,7 +13,7 @@ public abstract class AcmTest {
 
     private static ByteArrayOutputStream stdoutMock;
 
-    void initialize(String input) {
+    public void initialize(String input) {
         stdinMock = new ByteArrayInputStream(input.getBytes());
         stdoutMock = new ByteArrayOutputStream(10_000_000);
 
@@ -19,11 +21,11 @@ public abstract class AcmTest {
         System.setOut(new PrintStream(stdoutMock));
     }
 
-    void compare(long input, long output) {
+    public void compare(long input, long output) {
         compare(String.valueOf(input), String.valueOf(output));
     }
 
-    void compare(String input, String output) {
+    public void compare(String input, String output) {
         try {
             initialize(input);
             processInput();
@@ -34,10 +36,10 @@ public abstract class AcmTest {
         }
     }
 
-    String readFile(String filename) {
+    public String readFile(String filename) {
         return new Scanner(AcmTest.class.getResourceAsStream(filename), "UTF-8").useDelimiter("\\A").next();
     }
 
-    abstract void processInput() throws Exception;
+    public abstract void processInput() throws Exception;
 
 }

@@ -1,11 +1,12 @@
 import org.junit.jupiter.api.Test;
+import util.AcmTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CsesSortingTowersTest extends AcmTest {
 
     @Override
-    void processInput() throws Exception {
+    public void processInput() throws Exception {
         new CsesSortingTowers().solve();
     }
 

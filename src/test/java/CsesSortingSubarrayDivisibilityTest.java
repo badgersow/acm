@@ -1,8 +1,9 @@
 import org.junit.jupiter.api.Test;
+import util.AcmTest;
 
 public class CsesSortingSubarrayDivisibilityTest extends AcmTest {
     @Override
-    void processInput() throws Exception {
+    public void processInput() throws Exception {
         new CsesSortingSubarrayDivisibility().solve();
     }
 

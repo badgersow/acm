@@ -1,8 +1,9 @@
 import org.junit.jupiter.api.Test;
+import util.AcmTest;
 
 public class CsesSortingSumOfFourValuesTest extends AcmTest {
     @Override
-    void processInput() throws Exception {
+    public void processInput() throws Exception {
         new CsesSortingSumOfFourValues().solve();
     }
 

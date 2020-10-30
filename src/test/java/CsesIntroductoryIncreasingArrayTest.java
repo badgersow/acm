@@ -1,9 +1,10 @@
 import org.junit.jupiter.api.Test;
+import util.AcmTest;
 
 class CsesIntroductoryIncreasingArrayTest extends AcmTest {
 
     @Override
-    void processInput() throws Exception {
+    public void processInput() throws Exception {
         new CsesIntroductoryIncreasingArray().solve();
     }
 

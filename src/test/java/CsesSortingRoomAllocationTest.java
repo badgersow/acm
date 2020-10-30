@@ -1,11 +1,12 @@
 import org.junit.jupiter.api.Test;
+import util.AcmTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class CsesSortingRoomAllocationTest extends AcmTest {
     @Override
-    void processInput() throws Exception {
+    public void processInput() throws Exception {
         new CsesSortingRoomAllocation().solve();
     }
 

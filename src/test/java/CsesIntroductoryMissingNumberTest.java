@@ -1,9 +1,10 @@
 import org.junit.jupiter.api.Test;
+import util.AcmTest;
 
 class CsesIntroductoryMissingNumberTest extends AcmTest {
 
     @Override
-    void processInput() {
+    public void processInput() {
         new CsesIntroductoryMissingNumber().solve();
     }
 

@@ -1,9 +1,10 @@
 import org.junit.jupiter.api.Test;
+import util.AcmTest;
 
 class CsesIntroductoryTwoSetsTest extends AcmTest {
 
     @Override
-    void processInput() throws Exception {
+    public void processInput() throws Exception {
         new CsesIntroductoryTwoSets().solve();
     }
 
