@@ -134,11 +134,7 @@ public class Springboards {
     }
 
     private long doGet(int from, int to) {
-        if (from == to) {
-            return tree[from];
-        }
-
-        if (from + 1 == to) {
+        if (from + 1 >= to) {
             return Math.min(tree[from], tree[to]);
         }
 
