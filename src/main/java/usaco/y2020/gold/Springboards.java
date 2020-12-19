@@ -52,40 +52,33 @@ public class Springboards {
         }
 
         Arrays.sort(boards, Comparator.comparingInt((int[] arr) -> arr[0]).thenComparingInt(arr -> arr[1]));
-        for (int i = 0; i < P; i++) {
-            boards[i] = new int[]{compressedByReal.get(boards[i][0]),
-                    compressedByReal.get(boards[i][1]),
-                    compressedByReal.get(boards[i][2]),
-                    compressedByReal.get(boards[i][3])};
-        }
-
         Arrays.fill(tree, Long.MAX_VALUE);
         long[] dp = new long[P];
         List<long[]>[] pendingValues = new ArrayList[MAX_COORDINATES];
         for (int i = 0; i < MAX_COORDINATES; i++) {
             pendingValues[i] = new ArrayList<>();
         }
-        int lastPendingAdded = 0;
+        int pendingToAdd = 0;
         for (int i = 0; i < P; i++) {
             // Add pending boards to the row i
 
             final int[] currentBoard = boards[i];
-            final int startXCompressed = currentBoard[0],
-                    startYCompressed = currentBoard[1],
-                    endXCompressed = currentBoard[2],
-                    endYCompressed = currentBoard[3];
-            final int startXReal = realByCompressed[startXCompressed],
-                    startYReal = realByCompressed[startYCompressed],
-                    endXReal = realByCompressed[endXCompressed],
-                    endYReal = realByCompressed[endYCompressed];
+            final int startXReal = currentBoard[0],
+                    startYReal = currentBoard[1],
+                    endXReal = currentBoard[2],
+                    endYReal = currentBoard[3];
+            final int startXCompressed = compressedByReal.get(startXReal),
+                    startYCompressed = compressedByReal.get(startYReal),
+                    endXCompressed = compressedByReal.get(endXReal),
+                    endYCompressed = compressedByReal.get(endYReal);
 
-            for (int x = lastPendingAdded; x <= startXCompressed; x++) {
+            for (int x = pendingToAdd; x <= startXCompressed; x++) {
                 for (long[] pendingValue : pendingValues[x]) {
                     treeAdd((int) pendingValue[0], pendingValue[1]);
                 }
                 pendingValues[x].clear();
             }
-            lastPendingAdded = startXCompressed;
+            pendingToAdd = startXCompressed;
 
             final long directCost = startXReal + startYReal;
             final long treeValue = treeGet(0, startYCompressed);
@@ -103,11 +96,12 @@ public class Springboards {
         }
 
         // Now we can calculate the result using all springboards
-        long result = 2L * (n + 1);
+        long result = 2L * n;
         for (int i = 0; i < P; i++) {
-            result = Math.min(result, dp[i] +
-                    (n - realByCompressed[boards[i][2]]) +
-                    (n - realByCompressed[boards[i][3]]));
+            result = Math.min(result,
+                    dp[i] +
+                            (n - boards[i][2]) +
+                            (n - boards[i][3]));
         }
 
         out.println(result);
