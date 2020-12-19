@@ -133,7 +133,7 @@ public class Springboards {
         }
 
         final int fromParent = isLeft(from) ? from / 2 : from / 2 + 1;
-        final int toParent = isRight(from) ? to / 2 : to / 2 - 1;
+        final int toParent = isRight(to) ? to / 2 : to / 2 - 1;
 
         return Math.min(tree[from], Math.min(tree[to], doGet(fromParent, toParent)));
     }
