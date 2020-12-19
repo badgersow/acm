@@ -11,8 +11,23 @@ public class SpringboardsTest extends AcmTest {
     }
 
     @Test
-    public void sample() {
+    public void sample1() {
         compare("3 2 0 1 0 2 1 2 2 3", "3");
+    }
+
+    @Test
+    public void sample2() {
+        compare("3 2 0 1 1 1 1 2 2 3", "3");
+    }
+
+    @Test
+    public void sample3() {
+        compare("3 2 0 0 2 0 1 1 3 3", "2");
+    }
+
+    @Test
+    public void sample4() {
+        compare("3 2 0 0 0 0 1 1 1 1", "6");
     }
 
     @Test

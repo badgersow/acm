@@ -65,6 +65,7 @@ public class Springboards {
         for (int i = 0; i < MAX_COORDINATES; i++) {
             pendingValues[i] = new ArrayList<>();
         }
+        int lastPendingAdded = 0;
         for (int i = 0; i < P; i++) {
             // Add pending boards to the row i
 
@@ -78,12 +79,15 @@ public class Springboards {
                     endXReal = realByCompressed[endXCompressed],
                     endYReal = realByCompressed[endYCompressed];
 
-            for (long[] pendingValue : pendingValues[startXCompressed]) {
-                treeAdd((int) pendingValue[0], pendingValue[1]);
+            for (int x = lastPendingAdded; x <= startXCompressed; x++) {
+                for (long[] pendingValue : pendingValues[x]) {
+                    treeAdd((int) pendingValue[0], pendingValue[1]);
+                }
+                pendingValues[x].clear();
             }
-            pendingValues[startXCompressed].clear();
+            lastPendingAdded = startXCompressed;
 
-            final int directCost = startXReal + startYReal;
+            final long directCost = startXReal + startYReal;
             final long treeValue = treeGet(0, startYCompressed);
             final long optimalCost = (treeValue == Long.MAX_VALUE) ? directCost : Math.min(directCost, treeValue + startXReal + startYReal);
 
