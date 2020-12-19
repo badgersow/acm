@@ -4,7 +4,9 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,18 +23,17 @@ public class Springboards {
 
     private final PrintWriter out = new PrintWriter(System.out);
 
-    final int MAX_SPRINGBOARDS = 100_001;
+    final int MAX_COORDINATES = 400_004;
 
     public void solve() throws Exception {
         final int n = in.nextInt();
         final int P = in.nextInt();
 
-        int[][] boards = new int[n][P];
-
         final Map<Integer, Integer> compressedByReal = new HashMap<>();
-        final int[] realByCompressed = new int[MAX_SPRINGBOARDS];
+        final int[] realByCompressed = new int[MAX_COORDINATES];
         final SortedSet<Integer> coordinates = new TreeSet<>();
 
+        int[][] boards = new int[P][];
         for (int i = 0; i < P; i++) {
             final int startX = in.nextInt();
             final int startY = in.nextInt();
@@ -50,8 +51,105 @@ public class Springboards {
             index++;
         }
 
+        Arrays.sort(boards, Comparator.comparingInt((int[] arr) -> arr[0]).thenComparingInt(arr -> arr[1]));
+        for (int i = 0; i < P; i++) {
+            boards[i] = new int[]{compressedByReal.get(boards[i][0]),
+                    compressedByReal.get(boards[i][1]),
+                    compressedByReal.get(boards[i][2]),
+                    compressedByReal.get(boards[i][3])};
+        }
 
+        Arrays.fill(tree, Long.MAX_VALUE);
+        long[] dp = new long[P];
+        List<long[]>[] pendingValues = new ArrayList[MAX_COORDINATES];
+        for (int i = 0; i < MAX_COORDINATES; i++) {
+            pendingValues[i] = new ArrayList<>();
+        }
+        for (int i = 0; i < P; i++) {
+            // Add pending boards to the row i
+
+            final int[] currentBoard = boards[i];
+            final int startXCompressed = currentBoard[0],
+                    startYCompressed = currentBoard[1],
+                    endXCompressed = currentBoard[2],
+                    endYCompressed = currentBoard[3];
+            final int startXReal = realByCompressed[startXCompressed],
+                    startYReal = realByCompressed[startYCompressed],
+                    endXReal = realByCompressed[endXCompressed],
+                    endYReal = realByCompressed[endYCompressed];
+
+            for (long[] pendingValue : pendingValues[startXCompressed]) {
+                treeAdd((int) pendingValue[0], pendingValue[1]);
+            }
+            pendingValues[startXCompressed].clear();
+
+            final int directCost = startXReal + startYReal;
+            final long treeValue = treeGet(0, startYCompressed);
+            final long optimalCost = (treeValue == Long.MAX_VALUE) ? directCost : Math.min(directCost, treeValue + startXReal + startYReal);
+
+            dp[i] = optimalCost;
+
+            if (endXCompressed == startXCompressed) {
+                // We can add this directly to the tree
+                treeAdd(endYCompressed, optimalCost - endXReal - endYReal);
+            } else {
+                // Add to the pending list
+                pendingValues[endXCompressed].add(new long[]{endYCompressed, optimalCost - endXReal - endYReal});
+            }
+        }
+
+        // Now we can calculate the result using all springboards
+        long result = 2L * (n + 1);
+        for (int i = 0; i < P; i++) {
+            result = Math.min(result, dp[i] +
+                    (n - realByCompressed[boards[i][2]]) +
+                    (n - realByCompressed[boards[i][3]]));
+        }
+
+        out.println(result);
         out.flush();
+    }
+
+    int treeBase = 1 << 19;
+    long[] tree = new long[2 * treeBase + 1];
+
+    private void treeAdd(int key, long value) {
+        doAdd(treeBase + key, value);
+    }
+
+    private void doAdd(int position, long value) {
+        if (position == 0) {
+            return;
+        }
+        tree[position] = Math.min(tree[position], value);
+        doAdd(position / 2, value);
+    }
+
+    private long treeGet(int from, int to) {
+        return doGet(treeBase + from, treeBase + to);
+    }
+
+    private long doGet(int from, int to) {
+        if (from == to) {
+            return tree[from];
+        }
+
+        if (from + 1 == to) {
+            return Math.min(tree[from], tree[to]);
+        }
+
+        final int fromParent = isLeft(from) ? from / 2 : from / 2 + 1;
+        final int toParent = isRight(from) ? to / 2 : to / 2 - 1;
+
+        return Math.min(tree[from], Math.min(tree[to], doGet(fromParent, toParent)));
+    }
+
+    private boolean isLeft(int node) {
+        return node % 2 == 0;
+    }
+
+    private boolean isRight(int node) {
+        return node % 2 == 1;
     }
 
     private static class FastReader {
