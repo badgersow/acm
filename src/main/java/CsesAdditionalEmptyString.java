@@ -64,12 +64,10 @@ public class CsesAdditionalEmptyString {
                 final int leftWays = f(from + 1, split);
                 final int rightWays = f(split + 1, to);
 
-                for (int positionOfThisRemoval = leftSteps; positionOfThisRemoval < totalSteps; positionOfThisRemoval++) {
-                    result = (int) (result +
-                            (long) C[positionOfThisRemoval][leftSteps] * // Let's arrange left removals before this removal. All other positions are right steps
-                                    leftWays % P *
-                                    rightWays % P) % P;
-                }
+                result = (int) (result +
+                        (long) C[totalSteps][leftSteps + 1] * // Let's arrange left removals before this removal. All other positions are right steps
+                                leftWays % P *
+                                rightWays % P) % P;
             }
         }
 
