@@ -2,14 +2,13 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
-public class CsesAdditionalEmptyStringBruteForce {
+public class CsesAdditionalEmptyString {
 
     public static void main(String[] args) throws Exception {
-        new CsesAdditionalEmptyStringBruteForce().solve();
+        new CsesAdditionalEmptyString().solve();
     }
 
     private final FastReader in = new FastReader();
@@ -17,76 +16,64 @@ public class CsesAdditionalEmptyStringBruteForce {
     private final PrintWriter out = new PrintWriter(System.out);
 
     public void solve() throws Exception {
-        final char[] initial = in.readLine().toCharArray();
-        out.println(f(initial, initial.length));
+        for (int[] row : dp) {
+            Arrays.fill(row, -1);
+        }
+
+        for (int n = 0; n < C.length; n++) {
+            for (int k = 0; k <= n; k++) {
+                if (n == 0 || k == 0) {
+                    C[n][k] = 1;
+                } else {
+                    C[n][k] = (C[n - 1][k] + C[n - 1][k - 1]) % P;
+                }
+            }
+        }
+        string = in.readLine().toCharArray();
+        out.println(f(0, string.length));
         out.flush();
     }
 
+    private char[] string;
+
     private static final int P = 1_000_000_007;
 
-    private static final long MULTIPLIER = 207;
+    private int[][] dp = new int[501][501];
 
-    private static final long[] powers = new long[501];
+    private int[][] C = new int[501][501];
 
-    static {
-        powers[0] = 1;
-        for (int i = 1; i < powers.length; i++) {
-            powers[i] = powers[i - 1] * MULTIPLIER;
-        }
-    }
-
-    private Map<Long, Integer> dp = new HashMap<>();
-
-    private int f(char[] s, int length) {
-        if (length == 0) {
+    private int f(int from, int to) {
+        if (from == to) {
             return 1;
         }
 
-        if (length == 1) {
+        if ((to - from) % 2 == 1) {
             return 0;
         }
 
-        final long initialHash = hash(s);
-
-        if (dp.containsKey(initialHash)) {
-            return dp.get(initialHash);
+        if (dp[from][to] >= 0) {
+            return dp[from][to];
         }
 
-        int index1 = 0;
-        for (; s[index1] == '\0'; index1++) ;
-        int index2 = index1 + 1;
-        for (; s[index2] == '\0'; index2++) ;
-
+        final int totalSteps = (to - from) / 2;
+        final char first = string[from];
         int result = 0;
-        while (true) {
-            if (s[index1] == s[index2]) {
-                // Try to remove them and update the result
-                final char c1 = s[index1];
-                final char c2 = s[index2];
-                s[index1] = '\0';
-                s[index2] = '\0';
-                result = (result + f(s, length - 2));
-                s[index1] = c1;
-                s[index2] = c2;
-            }
+        for (int split = from + 1; split < to; split += 2) {
+            if (first == string[split]) {
+                final int leftSteps = (split - from - 1) / 2;
+                final int leftWays = f(from + 1, split);
+                final int rightWays = f(split + 1, to);
 
-            index1 = index2;
-            for (index2++; index2 < s.length && s[index2] == '\0'; index2++) ;
-            if (index2 == s.length) {
-                break;
+                for (int positionOfThisRemoval = leftSteps; positionOfThisRemoval < totalSteps; positionOfThisRemoval++) {
+                    result = (int) (result +
+                            (long) C[positionOfThisRemoval][leftSteps] * // Let's arrange left removals before this removal. All other positions are right steps
+                                    leftWays % P *
+                                    rightWays % P) % P;
+                }
             }
         }
 
-        dp.put(initialHash, result);
-        return result;
-    }
-
-    private long hash(char[] string) {
-        long result = 0;
-        for (int i = 0; i < string.length; i++) {
-            result += powers[i] * string[i];
-        }
-        return result;
+        return (dp[from][to] = (int) result);
     }
 
     private static class FastReader {
