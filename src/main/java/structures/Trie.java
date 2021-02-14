@@ -139,8 +139,10 @@ public class Trie {
         return root.min;
     }
 
-    public void reverse() {
-        this.reversed = !this.reversed;
+    public static void reverse(Trie root) {
+        if (root != null) {
+            root.reversed = !root.reversed;
+        }
     }
 
     public static class TriePair {

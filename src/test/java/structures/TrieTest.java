@@ -3,6 +3,7 @@ package structures;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static structures.Trie.reverse;
 
 public class TrieTest {
 
@@ -30,7 +31,7 @@ public class TrieTest {
     @Test
     public void testReversing() {
         final Trie root = Trie.create(1, 2, 3, 4, 5);
-        root.reverse();
+        reverse(root);
 
         assertArrayIs(root, 5, 4, 3, 2, 1);
     }
@@ -54,10 +55,10 @@ public class TrieTest {
     @Test
     public void testCuttingAndReversing() {
         final Trie root = Trie.create(1, 2, 3, 4, 5);
-        root.reverse();
+        reverse(root);
         final Trie part321 = Trie.split(root, 2).right;
         final Trie part32 = Trie.split(part321, 2).left;
-        part32.reverse();
+        reverse(part32);
 
         final Trie part32123 = Trie.merge(part321, part32);
         assertArrayIs(part32123, 3, 2, 1, 2, 3);
@@ -70,7 +71,7 @@ public class TrieTest {
         assertThat(positionOf1).isEqualTo(2);
 
         final Trie.TriePair split1 = Trie.split(root, 3);
-        split1.left.reverse();
+        reverse(split1.left);
         final Trie root1243 = Trie.merge(split1.left, split1.right);
         final int positionOf2 = Trie.positionOf(root1243, 2);
         assertThat(positionOf2).isEqualTo(1);
@@ -79,7 +80,7 @@ public class TrieTest {
         final int positionOf3 = Trie.positionOf(root1243, 3);
         assertThat(positionOf3).isEqualTo(3);
         final Trie.TriePair split2 = Trie.split(root1243, 2);
-        split2.right.reverse();
+        reverse(split2.right);
 
         final Trie sortedArray = Trie.merge(split2.left, split2.right);
         assertArrayIs(sortedArray, 1, 2, 3, 4);
