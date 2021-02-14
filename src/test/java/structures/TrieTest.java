@@ -29,7 +29,7 @@ public class TrieTest {
 
     @Test
     public void testReversing() {
-        final Trie root = Trie.create(1, 2, 3, 4,5);
+        final Trie root = Trie.create(1, 2, 3, 4, 5);
         root.reverse();
 
         assertArrayIs(root, 5, 4, 3, 2, 1);
@@ -49,6 +49,40 @@ public class TrieTest {
         final Trie.TriePair split = Trie.split(root, 2);
         assertArrayIs(split.left, 1, 2);
         assertArrayIs(split.right, 3, 4, 5);
+    }
+
+    @Test
+    public void testCuttingAndReversing() {
+        final Trie root = Trie.create(1, 2, 3, 4, 5);
+        root.reverse();
+        final Trie part321 = Trie.split(root, 2).right;
+        final Trie part32 = Trie.split(part321, 2).left;
+        part32.reverse();
+
+        final Trie part32123 = Trie.merge(part321, part32);
+        assertArrayIs(part32123, 3, 2, 1, 2, 3);
+    }
+
+    @Test
+    public void testReversalsToSolveTheProblem() {
+        final Trie root = Trie.create(4, 2, 1, 3);
+        final int positionOf1 = Trie.positionOf(root, 1);
+        assertThat(positionOf1).isEqualTo(2);
+
+        final Trie.TriePair split1 = Trie.split(root, 3);
+        split1.left.reverse();
+        final Trie root1243 = Trie.merge(split1.left, split1.right);
+        final int positionOf2 = Trie.positionOf(root1243, 2);
+        assertThat(positionOf2).isEqualTo(1);
+        // On it's place. Cool.
+
+        final int positionOf3 = Trie.positionOf(root1243, 3);
+        assertThat(positionOf3).isEqualTo(3);
+        final Trie.TriePair split2 = Trie.split(root1243, 2);
+        split2.right.reverse();
+
+        final Trie sortedArray = Trie.merge(split2.left, split2.right);
+        assertArrayIs(sortedArray, 1, 2, 3, 4);
     }
 
     private void assertArrayIs(Trie root, Integer... expected) {

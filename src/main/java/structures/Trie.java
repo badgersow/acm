@@ -41,7 +41,7 @@ public class Trie {
     }
 
     public Trie withRightNode(Trie rightNode) {
-        return new Trie(left, right, data, weight);
+        return new Trie(left, rightNode, data, weight);
     }
 
     public static TriePair split(Trie root, int k) {
@@ -49,6 +49,7 @@ public class Trie {
             return new TriePair(null, null);
         }
 
+        root.propagateReversed();
         if (size(root.left) < k) {
             // The cutting point is somewhere inside right subtree. So we can add current node and
             // the left subtree to the left part, and recursively process right subtree
@@ -74,6 +75,8 @@ public class Trie {
         if (right == null) {
             return left;
         }
+        right.propagateReversed();
+        left.propagateReversed();
         if (left.weight <= right.weight) { // Left becomes a root
             left.right = merge(left.right, right);
             left.size = size(left.left) + size(left.right) + 1;
@@ -88,6 +91,7 @@ public class Trie {
     }
 
     public static int positionOf(Trie root, int value) {
+        root.propagateReversed();
         if (root.data == value) {
             return size(root.left);
         }
@@ -101,6 +105,7 @@ public class Trie {
     }
 
     public int get(int index) {
+        this.propagateReversed();
         if (index == size(left)) {
             return this.data;
         }
@@ -145,5 +150,21 @@ public class Trie {
             this.left = left;
             this.right = right;
         }
+    }
+
+    private void propagateReversed() {
+        if (this.reversed) {
+            Trie tmp = left;
+            left = right;
+            right = tmp;
+
+            if (left != null) {
+                left.reversed = !left.reversed;
+            }
+            if (right != null) {
+                right.reversed = !right.reversed;
+            }
+        }
+        this.reversed = false;
     }
 }
