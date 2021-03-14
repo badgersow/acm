@@ -19,28 +19,29 @@ public class CsesAdditionalMaximumBuilding2 {
 
     char[][] cc = new char[N][N + 1];
 
-    int[][] ll = new int[N][N], rr = new int[N][N], aa = new int[N][N];
+    int[][] ll = new int[N][N], rr = new int[N][N], rectNum = new int[N][N];
     boolean[][] alive = new boolean[N][N];
 
-    static class E {
+    static class Point {
         int i, j;
     }
 
-    E[][] ee = new E[N + 1][];
+    Point[][] ee = new Point[N + 1][];
 
     int[] kk = new int[N + 1], pp = new int[N + 1];
 
     public void solve() throws Exception {
-        int n, m, h, i, j, d, l, r;
-        E e;
+        int h, d, l, r;
+        Point point;
 
-        n = in.nextInt();
-        m = in.nextInt();
-        for (i = 0; i < n; i++)
+        final int n = in.nextInt();
+        final int m = in.nextInt();
+        for (int i = 0; i < n; i++)
             cc[i] = in.readLine().toCharArray();
-        for (j = 0; j < m; j++) {
+
+        for (int j = 0; j < m; j++) {
             d = 0;
-            for (i = 0; i < n; i++) {
+            for (int i = 0; i < n; i++) {
                 if (cc[i][j] == '*')
                     d = 0;
                 else
@@ -49,32 +50,33 @@ public class CsesAdditionalMaximumBuilding2 {
             }
         }
         for (d = 0; d <= n; d++) {
-            ee[d] = new E[kk[d]];
+            ee[d] = new Point[kk[d]];
             for (int i1 = 0; i1 < ee[d].length; i1++) {
-                ee[d][i1] = new E();
+                ee[d][i1] = new Point();
             }
             kk[d] = 0;
         }
-        for (j = 0; j < m; j++) {
+        for (int j = 0; j < m; j++) {
             d = 0;
-            for (i = 0; i < n; i++) {
+            for (int i = 0; i < n; i++) {
                 if (cc[i][j] == '*')
                     d = 0;
                 else
                     d++;
-                e = ee[d][kk[d]++];
-                e.i = i;
-                e.j = j;
+                point = ee[d][kk[d]++];
+                point.i = i;
+                point.j = j;
             }
         }
-        for (i = 0; i < n; i++)
-            for (j = 0; j < m; j++)
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < m; j++)
                 ll[i][j] = rr[i][j] = j;
+
         for (d = n; d > 0; d--) {
             for (h = 0; h < kk[d]; h++) {
-                e = ee[d][h];
-                i = e.i;
-                j = e.j;
+                point = ee[d][h];
+                int i = point.i;
+                int j = point.j;
                 alive[i][j] = true;
                 l = r = j;
                 if (j > 0 && alive[i][j - 1]) {
@@ -89,18 +91,20 @@ public class CsesAdditionalMaximumBuilding2 {
                 ll[i][r] = l;
                 pp[r - l + 1]++;
             }
-            int[] qq = aa[d - 1];
-            for (j = 1; j <= m; j++)
+
+            int[] qq = rectNum[d - 1];
+            for (int j = 1; j <= m; j++)
                 qq[j - 1] = pp[j];
-            for (j = m - 2; j >= 0; j--)
+            for (int j = m - 2; j >= 0; j--)
                 qq[j] += qq[j + 1];
-            for (j = m - 2; j >= 0; j--)
+            for (int j = m - 2; j >= 0; j--)
                 qq[j] += qq[j + 1];
         }
         for (d = 0; d < n; d++) {
-            for (j = 0; j < m; j++)
-                out.printf("%d ", aa[d][j]);
-            out.printf("\n");
+            for (int j = 0; j < m; j++) {
+                out.print(rectNum[d][j] + " ");
+            }
+            out.println();
         }
         out.flush();
     }
