@@ -23,4 +23,19 @@ public class CsesAdditionalMaximumBuilding2Test extends AcmTest {
                         "3 0 0 0 0 0 0 \n");
     }
 
+    @Test
+    public void sample2() {
+        compare("" +
+                        "4 4\n" +
+                        "**..\n" +
+                        ".*..\n" +
+                        "*.*.\n" +
+                        "...*",
+                "" +
+                        "10 4 1 0 \n" +
+                        "4 1 0 0 \n" +
+                        "1 0 0 0 \n" +
+                        "0 0 0 0");
+    }
+
 }
