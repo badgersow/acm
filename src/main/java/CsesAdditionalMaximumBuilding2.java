@@ -17,18 +17,18 @@ public class CsesAdditionalMaximumBuilding2 {
 
     final int N = 1000;
 
-    char[][] cc =new char[N][N+1];
+    char[][] cc = new char[N][N + 1];
 
-    int[][] ll = new int[N][N],rr = new int[N][N], aa = new int[N][N];
+    int[][] ll = new int[N][N], rr = new int[N][N], aa = new int[N][N];
     boolean[][] alive = new boolean[N][N];
 
     static class E {
         int i, j;
     }
 
-    E[][] ee = new E[N +1][];
+    E[][] ee = new E[N + 1][];
 
-    int[] kk = new int[N +1],pp = new int[N +1];
+    int[] kk = new int[N + 1], pp = new int[N + 1];
 
     public void solve() throws Exception {
         int n, m, h, i, j, d, l, r;
