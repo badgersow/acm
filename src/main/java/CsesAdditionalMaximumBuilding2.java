@@ -36,10 +36,10 @@ public class CsesAdditionalMaximumBuilding2 {
 
     Point[][] points = new Point[N + 1][];
 
-    int[] pointsLen = new int[N + 1], pp = new int[N + 1];
+    int[] pointsLen = new int[N + 1], rectsOfWidth = new int[N + 1];
 
     public void solve() throws Exception {
-        int h, d, l, r;
+        int pointIndex, height, l, r;
         Point point;
 
         final int n = in.nextInt();
@@ -48,32 +48,32 @@ public class CsesAdditionalMaximumBuilding2 {
             input[i] = in.readLine().toCharArray();
 
         for (int j = 0; j < m; j++) {
-            d = 0;
+            height = 0;
             for (int i = 0; i < n; i++) {
                 if (input[i][j] == '*')
-                    d = 0;
+                    height = 0;
                 else
-                    d++;
-                pointsLen[d]++;
+                    height++;
+                pointsLen[height]++;
             }
         }
 
-        for (d = 0; d <= n; d++) {
-            points[d] = new Point[pointsLen[d]];
-            for (int i1 = 0; i1 < points[d].length; i1++) {
-                points[d][i1] = new Point();
+        for (height = 0; height <= n; height++) {
+            points[height] = new Point[pointsLen[height]];
+            for (int i1 = 0; i1 < points[height].length; i1++) {
+                points[height][i1] = new Point();
             }
-            pointsLen[d] = 0;
+            pointsLen[height] = 0;
         }
 
         for (int j = 0; j < m; j++) {
-            d = 0;
+            height = 0;
             for (int i = 0; i < n; i++) {
                 if (input[i][j] == '*')
-                    d = 0;
+                    height = 0;
                 else
-                    d++;
-                point = points[d][pointsLen[d]++];
+                    height++;
+                point = points[height][pointsLen[height]++];
                 point.i = i;
                 point.j = j;
             }
@@ -84,37 +84,39 @@ public class CsesAdditionalMaximumBuilding2 {
             }
         }
 
-        for (d = n; d > 0; d--) {
-            for (h = 0; h < pointsLen[d]; h++) {
-                point = points[d][h];
+        for (height = n; height > 0; height--) {
+            for (pointIndex = 0; pointIndex < pointsLen[height]; pointIndex++) {
+                point = points[height][pointIndex];
                 int i = point.i;
                 int j = point.j;
                 alive[i][j] = true;
                 l = r = j;
                 if (j > 0 && alive[i][j - 1]) {
                     l = ll[i][j - 1];
-                    pp[j - l]--;
+                    rectsOfWidth[j - l]--;
                 }
                 if (j < m - 1 && alive[i][j + 1]) {
                     r = rr[i][j + 1];
-                    pp[r - j]--;
+                    rectsOfWidth[r - j]--;
                 }
                 rr[i][l] = r;
                 ll[i][r] = l;
-                pp[r - l + 1]++;
+                rectsOfWidth[r - l + 1]++;
             }
 
-            int[] qq = rectNum[d - 1];
             for (int j = 1; j <= m; j++)
-                qq[j - 1] = pp[j];
+                rectNum[height - 1][j - 1] = rectsOfWidth[j];
+
+            // Extend with larger rectangles
+            // Which we calculated previously
             for (int j = m - 2; j >= 0; j--)
-                qq[j] += qq[j + 1];
+                rectNum[height - 1][j] += rectNum[height - 1][j + 1];
             for (int j = m - 2; j >= 0; j--)
-                qq[j] += qq[j + 1];
+                rectNum[height - 1][j] += rectNum[height - 1][j + 1];
         }
-        for (d = 0; d < n; d++) {
+        for (height = 0; height < n; height++) {
             for (int j = 0; j < m; j++) {
-                out.print(rectNum[d][j] + " ");
+                out.print(rectNum[height][j] + " ");
             }
             out.println();
         }
