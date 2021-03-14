@@ -15,7 +15,7 @@ public class CsesAdditionalMaximumBuilding2 {
     private final PrintWriter out = new PrintWriter(System.out);
 
 
-    final int N = 1000;
+    final int N = 4;
 
     char[][] input = new char[N][N + 1];
 
@@ -24,11 +24,19 @@ public class CsesAdditionalMaximumBuilding2 {
 
     static class Point {
         int i, j;
+
+        @Override
+        public String toString() {
+            return "Point{" +
+                    "i=" + i +
+                    ", j=" + j +
+                    '}';
+        }
     }
 
-    Point[][] ee = new Point[N + 1][];
+    Point[][] points = new Point[N + 1][];
 
-    int[] emptyAfterTree = new int[N + 1], pp = new int[N + 1];
+    int[] pointsLen = new int[N + 1], pp = new int[N + 1];
 
     public void solve() throws Exception {
         int h, d, l, r;
@@ -46,17 +54,18 @@ public class CsesAdditionalMaximumBuilding2 {
                     d = 0;
                 else
                     d++;
-                emptyAfterTree[d]++;
+                pointsLen[d]++;
             }
         }
 
         for (d = 0; d <= n; d++) {
-            ee[d] = new Point[emptyAfterTree[d]];
-            for (int i1 = 0; i1 < ee[d].length; i1++) {
-                ee[d][i1] = new Point();
+            points[d] = new Point[pointsLen[d]];
+            for (int i1 = 0; i1 < points[d].length; i1++) {
+                points[d][i1] = new Point();
             }
-            emptyAfterTree[d] = 0;
+            pointsLen[d] = 0;
         }
+
         for (int j = 0; j < m; j++) {
             d = 0;
             for (int i = 0; i < n; i++) {
@@ -64,18 +73,20 @@ public class CsesAdditionalMaximumBuilding2 {
                     d = 0;
                 else
                     d++;
-                point = ee[d][emptyAfterTree[d]++];
+                point = points[d][pointsLen[d]++];
                 point.i = i;
                 point.j = j;
             }
         }
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < m; j++)
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
                 ll[i][j] = rr[i][j] = j;
+            }
+        }
 
         for (d = n; d > 0; d--) {
-            for (h = 0; h < emptyAfterTree[d]; h++) {
-                point = ee[d][h];
+            for (h = 0; h < pointsLen[d]; h++) {
+                point = points[d][h];
                 int i = point.i;
                 int j = point.j;
                 alive[i][j] = true;
