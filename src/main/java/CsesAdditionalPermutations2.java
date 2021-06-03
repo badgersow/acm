@@ -24,8 +24,6 @@ public class CsesAdditionalPermutations2 {
 
         if (N == 1) {
             out.println(1);
-        } else if (N == 2) {
-            out.println(0);
         } else {
             a[2][0] = 0;
             a[2][1] = 0;
