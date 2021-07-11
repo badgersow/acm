@@ -6,7 +6,7 @@ package leetcode.p546;
  */
 public class Solution {
 
-    private int[][][] dp = new int[101][101][101];
+    private final int[][][] dp = new int[101][101][101];
 
     private int[] boxes;
 
