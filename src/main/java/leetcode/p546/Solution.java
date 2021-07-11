@@ -1,31 +1,18 @@
 package leetcode.p546;
 
-import java.util.Arrays;
-
+/**
+ * DP solution with time complexity O(n^3 * k),
+ * where n is the size of the array (100) and k is the max value (100)
+ */
 public class Solution {
 
     private int[][][] dp = new int[101][101][101];
 
     private int[] boxes;
 
-    private int n;
-
-    private int[] nextOfSameColor;
-
     public int removeBoxes(int[] boxes) {
-        n = boxes.length;
+        int n = boxes.length;
         this.boxes = boxes;
-        nextOfSameColor = new int[n];
-        Arrays.fill(nextOfSameColor, -1);
-        for (int i = 0; i < n; i++) {
-            for (int j = i + 1; j < n; j++) {
-                if (boxes[i] == boxes[j]) {
-                    nextOfSameColor[i] = j;
-                    break;
-                }
-            }
-        }
-
         return f(0, boxes.length, 0);
     }
 
@@ -39,22 +26,26 @@ public class Solution {
             return dp[from][to][head];
         }
 
-        final int next = nextOfSameColor[from]; // this is the position of the next digit
-
         // Here we have several different options.
         // We can always just consume the current item with the head
         int result = (head + 1) * (head + 1) + f(from + 1, to, 0);
 
         // We can add the current item to the head, but only if the next item is the same
-        if (from < n - 1 && boxes[from] == boxes[from + 1]) {
+        if (boxes[from] == boxes[from + 1]) {
             result = Math.max(result, f(from + 1, to, head + 1));
-        } else if (from < n - 1 && next > 0 && next < to) {
-            // If the next color is different and somewhere there is our color,
-            // we can consume the middle separately
-            result = Math.max(result,
-                    f(from + 1, next, 0) + // middle
-                            f(next, to, head + 1) // tail
-            );
+        } else {
+            for (int next = from + 2; next < to; next++) {
+                if (boxes[from] != boxes[next]) {
+                    continue;
+                }
+
+                // If the next color is different and somewhere there is our color,
+                // we can consume the middle separately
+                result = Math.max(result,
+                        f(from + 1, next, 0) +   // middle
+                                f(next, to, head + 1) // tail
+                );
+            }
         }
 
         return dp[from][to][head] = result;
