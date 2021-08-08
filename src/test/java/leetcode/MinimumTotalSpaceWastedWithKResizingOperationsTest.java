@@ -6,6 +6,18 @@ import org.junit.jupiter.api.Test;
 class MinimumTotalSpaceWastedWithKResizingOperationsTest {
 
     @Test
+    public void trivial0() {
+        Assertions.assertThat(
+                new MinimumTotalSpaceWastedWithKResizingOperations()
+                        .minSpaceWastedKResizing(
+                                new int[]{1, 2},
+                                0
+                        )).isEqualTo(
+                1
+        );
+    }
+
+    @Test
     public void trivial1() {
         Assertions.assertThat(
                 new MinimumTotalSpaceWastedWithKResizingOperations()
