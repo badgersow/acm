@@ -21,6 +21,21 @@ class FindArrayGivenSubsetSumsTest {
     }
 
     @Test
+    public void trivial2() {
+        Assertions.assertThat(new FindArrayGivenSubsetSums()
+                .recoverArray(
+                        1,
+                        new int[]{
+                                0,0
+                        })).isEqualTo(
+                new int[]{
+                        0
+                }
+        );
+    }
+
+
+    @Test
     public void sample1() {
         Assertions.assertThat(new FindArrayGivenSubsetSums()
                 .recoverArray(
@@ -29,7 +44,7 @@ class FindArrayGivenSubsetSumsTest {
                                 -3, -2, -1, 0, 0, 1, 2, 3
                         })).isEqualTo(
                 new int[]{
-                        -3, 1, 2
+                        -2, -1, 3
                 }
         );
     }
