@@ -69,12 +69,13 @@ public class MaximumProductOfTheLengthOfTwoPalindromicSubstrings {
     }
 
     private long pow(long a, long n) {
-        long r = 1;
-        while (n > 0) {
-            if (n % 2 == 1) {
-                r = (r * a) % P;
-            }
-            a = (a * a)
-        }
+//        long r = 1;
+//        while (n > 0) {
+//            if (n % 2 == 1) {
+//                r = (r * a) % P;
+//            }
+//            a = (a * a)
+//        }
+        return 0;
     }
 }
