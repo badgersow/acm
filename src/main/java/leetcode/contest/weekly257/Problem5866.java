@@ -1,8 +1,16 @@
 package leetcode.contest.weekly257;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+
 public class Problem5866 {
 
-    int[] ref = new int[30_001];
+    int[] ref = new int[100_001];
 
     private int get(int a) {
         if (ref[a] == a) {
@@ -38,18 +46,33 @@ public class Problem5866 {
             }
         }
 
-        // Just check inversions
+        // Sort each component
+        Map<Integer, List<Integer>> numbersByComponent = new HashMap<>();
         for (int i = 0; i < nums.length; i++) {
-            for (int j = i + 1; j < nums.length; j++) {
-                if (nums[i] > nums[j]) {
-                    if (get(nums[i]) != get(nums[j])) {
-                        return false;
-                    }
-                }
-            }
+            int component = get(nums[i]);
+            numbersByComponent.putIfAbsent(component, new ArrayList<>());
+            numbersByComponent.get(component).add(nums[i]);
         }
 
-        // Sort each component
+        Map<Integer, Queue<Integer>> queueByComponent = new HashMap<>();
+        for (Map.Entry<Integer, List<Integer>> entry : numbersByComponent.entrySet()) {
+            int component = entry.getKey();
+            List<Integer> numbers = entry.getValue();
+
+            Collections.sort(numbers);
+            queueByComponent.put(component, new ArrayDeque<>(numbers));
+        }
+
+        List<Integer> sortedResult = new ArrayList<>();
+        for (int num : nums) {
+            sortedResult.add(queueByComponent.get(get(num)).remove());
+        }
+
+        for (int i = 1; i < sortedResult.size(); i++) {
+            if (sortedResult.get(i) < sortedResult.get(i - 1)) {
+                return false;
+            }
+        }
 
 
         return true;
