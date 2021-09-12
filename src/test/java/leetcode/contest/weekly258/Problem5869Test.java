@@ -11,7 +11,9 @@ class Problem5869Test {
             "bb,1",
             "accbcaxxcxx,25",
             "tmppdjtm,12",
-            "1234567890ab,1"})
+            "1234567890ab,1",
+            "1a2a3b4b5,9",
+            "ccgdtwnnhcdc,20"})
     void test(String input, int expected) {
         Assertions.assertThat(new Problem5869().maxProduct(input))
                 .isEqualTo(expected);
